@@ -1,0 +1,15 @@
+{
+    "name": "paulemile/gestion-cargaison",
+    "autoload": {
+        "psr-4": {
+            "Paulemile\\GestionCargaison\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "PECKOUET-BINOMBO",
+            "email": "apeckouet@gmail.com"
+        }
+    ],
+    "require": {}
+}
