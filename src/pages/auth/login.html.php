@@ -141,7 +141,7 @@
             
             <div class="sm:mx-auto sm:w-full sm:max-w-md">
                 <!-- Formulaire de connexion -->
-                <form id="loginForm" class="space-y-6 animate-slide-up" style="animation-delay: 0.2s;">
+                <form method="post" action="/accueil" id="loginForm" class="space-y-6 animate-slide-up" style="animation-delay: 0.2s;">
                     <!-- Email -->
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
@@ -180,7 +180,7 @@
                     
                     
                     <!-- Bouton de connexion -->
-                    <button type="submit" id="loginButton"
+                    <button type="submit"
                             class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors transform hover:scale-105">
                         <span id="login-text">Se connecter</span>
                         <i id="login-spinner" class="hidden fas fa-spinner fa-spin ml-2"></i>

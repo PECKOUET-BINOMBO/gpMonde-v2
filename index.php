@@ -8,7 +8,7 @@ require_once __DIR__.'/src/config/titreTopBar.php';
 
 // Routes
 $routes = [
-    '/' => 'src/pages/accueil.html.php',
+    '/accueil' => 'src/pages/accueil.html.php',
     '/dashboard' => 'src/pages/dashboard.html.php',
     '/cargaisons' => 'src/pages/cargaisons.html.php',
     '/enregistrement' => 'src/pages/enregistrement.html.php',
@@ -16,7 +16,7 @@ $routes = [
     '/403' => 'src/pages/errors/403.html.php',
     '/404' => 'src/pages/errors/404.html.php',
     '/500' => 'src/pages/errors/500.html.php',
-    '/connexion' => 'src/pages/auth/login.html.php',
+    '/' => 'src/pages/auth/login.html.php',
 ];
 
 $request = $_SERVER['REQUEST_URI'];

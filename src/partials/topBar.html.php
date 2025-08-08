@@ -12,7 +12,7 @@
              <button class="p-2 text-gray-400 hover:text-gray-600">
                  <i class="fas fa-bell"></i>
              </button>
-             <a href="/" class="text-sm text-gray-600 hover:text-primary">
+             <a href="/accueil" class="text-sm text-gray-600 hover:text-primary">
                  Retour au site
              </a>
          </div>
