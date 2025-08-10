@@ -158,7 +158,7 @@
 
                     <div class="sm:mx-auto sm:w-full sm:max-w-md">
                         <!-- Formulaire de connexion -->
-                        <form method="post" action="/accueil" id="loginForm" class="space-y-6 animate-slide-up" style="animation-delay: 0.2s;">
+                        <form id="loginForm" class="space-y-6 animate-slide-up" style="animation-delay: 0.2s;">
                             <!-- Email -->
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
@@ -217,7 +217,7 @@
                     </div>
                 </div>
             </div>
-
+            <script src="../../../dist/models/login.js"></script>
 
         </body>
 
