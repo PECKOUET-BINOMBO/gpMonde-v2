@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CargoTrack - Gestion de Cargaisons</title>
-    
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -316,43 +314,6 @@
                     { lat: 44.8378, lng: -0.5792, name: 'Bordeaux (Position actuelle)', time: '15/01/2025 16:45' },
                     { lat: 47.2184, lng: -1.5536, name: 'Nantes', time: '16/01/2025 12:00' },
                     { lat: 48.8566, lng: 2.3522, name: 'Paris (Destination)', time: '17/01/2025 18:00' }
-                ],
-                currentIndex: 3
-            },
-            'CG789012': {
-                title: 'Colis #CG789012',
-                type: 'Transport Aérien',
-                sender: 'Sophie Dubois',
-                recipient: 'Pierre Moreau',
-                weight: '2.3 kg',
-                value: '150 €',
-                status: 'En vol',
-                location: 'Aéroport Charles de Gaulle',
-                progress: 80,
-                route: [
-                    { lat: 48.8566, lng: 2.3522, name: 'Paris CDG (Départ)', time: '15/01/2025 09:00' },
-                    { lat: 50.8503, lng: 4.3517, name: 'Bruxelles', time: '15/01/2025 10:30' },
-                    { lat: 52.3676, lng: 4.9041, name: 'Amsterdam (Position actuelle)', time: '15/01/2025 12:15' },
-                    { lat: 53.3498, lng: -6.2603, name: 'Dublin (Destination)', time: '15/01/2025 14:45' }
-                ],
-                currentIndex: 2
-            },
-            'CG345678': {
-                title: 'Colis #CG345678',
-                type: 'Transport Routier',
-                sender: 'Marc Leroy',
-                recipient: 'Julie Bernard',
-                weight: '8.7 kg',
-                value: '320 €',
-                status: 'En livraison',
-                location: 'Centre de tri Lyon',
-                progress: 90,
-                route: [
-                    { lat: 45.7640, lng: 4.8357, name: 'Lyon (Départ)', time: '14/01/2025 07:00' },
-                    { lat: 46.5197, lng: 6.6323, name: 'Lausanne', time: '14/01/2025 11:30' },
-                    { lat: 46.9481, lng: 7.4474, name: 'Berne', time: '14/01/2025 14:20' },
-                    { lat: 47.3769, lng: 8.5417, name: 'Zurich (Position actuelle)', time: '15/01/2025 09:45' },
-                    { lat: 47.0502, lng: 8.3093, name: 'Lucerne (Destination)', time: '15/01/2025 16:00' }
                 ],
                 currentIndex: 3
             }
