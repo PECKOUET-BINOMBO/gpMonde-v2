@@ -1,20 +1,17 @@
 {
   "compilerOptions": {
-    
-    "target": "es2016",    
-    "module": "commonjs", 
+    "target": "es2016",
+    "module": "esnext",
+    "moduleResolution": "node",
     "strict": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "rootDir" : "./src",
-     
+    "rootDir": "./src"
   },
-
-  "include" : [
+  "include": [
     "src/**/*"
   ],
-
-  "exclude" : [
+  "exclude": [
     "node_modules",
     "dist"
   ]
