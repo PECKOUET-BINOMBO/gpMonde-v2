@@ -210,6 +210,13 @@
                                     <span class="text-sm text-red-800" id="error-message"></span>
                                 </div>
                             </div>
+
+                            <div id="global-success" class="hidden p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="text-sm text-green-800" id="success-message"></span>
+                                </div>
+                            </div>
                         </form>
 
 

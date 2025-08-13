@@ -1,0 +1,202 @@
+{
+    "personnes": [
+        {
+            "id": 1,
+            "nom": "Prometheus",
+            "prenom": "Timothy",
+            "tel": "+221775678901",
+            "adresse": "123 Mermoz, Dakar, Senegal",
+            "email": "admin@example.com",
+            "password": "admin123",
+            "created_at": "2023-08-08 12:00:00",
+            "updated_at": "2023-08-08 12:00:00"
+        },
+        {
+            "id": 2,
+            "nom": "Doe",
+            "prenom": "John",
+            "tel": "+221123456789",
+            "adresse": "456 Sender St, City, Country",
+            "email": "john.doe@example.com",
+            "password": "john1234",
+            "created_at": "2023-08-08 12:00:00",
+            "updated_at": "2023-08-08 12:00:00"
+        }
+    ],
+    "cargaisons": [
+        {
+            "id": 1,
+            "numero_cargaison": "CARG123456",
+            "type_transport": "maritime",
+            "lieu_depart": "Marseille",
+            "lieu_arrive": "Paris",
+            "distance": 775,
+            "latitude_depart": 43.2965,
+            "longitude_depart": 5.3698,
+            "latitude_arrivee": 48.8566,
+            "longitude_arrivee": 2.3522,
+            "poids_max": 1000,
+            "date_depart": "2025-01-12 08:00",
+            "date_arrivee": "2025-01-17 18:00"
+        },
+        {
+            "id": 2,
+            "numero_cargaison": "CARG469701",
+            "type_transport": null,
+            "lieu_depart": "Dakar, Région de Dakar, Sénégal",
+            "lieu_arrive": "Libreville, Estuaire, Gabon",
+            "distance": null,
+            "latitude_depart": null,
+            "longitude_depart": null,
+            "latitude_arrivee": null,
+            "longitude_arrivee": null,
+            "poids_max": 500,
+            "date_depart": null,
+            "date_arrivee": null,
+            "description": ""
+        },
+        {
+            "id": 3,
+            "numero_cargaison": "CARG691271",
+            "type_transport": null,
+            "lieu_depart": "Dakar, Région de Dakar, Sénégal",
+            "lieu_arrive": "Libreville, Estuaire, Gabon",
+            "distance": null,
+            "latitude_depart": null,
+            "longitude_depart": null,
+            "latitude_arrivee": null,
+            "longitude_arrivee": null,
+            "poids_max": 500,
+            "date_depart": null,
+            "date_arrivee": null,
+            "description": ""
+        },
+        {
+            "id": 4,
+            "numero_cargaison": "CARG621813",
+            "type_transport": null,
+            "lieu_depart": "Dakar, Région de Dakar, Sénégal",
+            "lieu_arrive": "Libreville, Estuaire, Gabon",
+            "distance": null,
+            "latitude_depart": null,
+            "longitude_depart": null,
+            "latitude_arrivee": null,
+            "longitude_arrivee": null,
+            "poids_max": 500,
+            "date_depart": null,
+            "date_arrivee": null,
+            "description": ""
+        },
+        {
+            "id": 5,
+            "numero_cargaison": "CARG323191",
+            "type_transport": null,
+            "lieu_depart": "Dakar, Région de Dakar, Sénégal",
+            "lieu_arrive": "Libreville, Estuaire, Gabon",
+            "distance": null,
+            "latitude_depart": null,
+            "longitude_depart": null,
+            "latitude_arrivee": null,
+            "longitude_arrivee": null,
+            "poids_max": 500,
+            "date_depart": null,
+            "date_arrivee": null,
+            "description": ""
+        }
+    ],
+    "colis": [
+        {
+            "id": 1,
+            "numero_colis": "CG123456",
+            "nbr_colis": 1,
+            "poids": 15.5,
+            "type_produit": "alimentaire",
+            "type_transport": "maritime",
+            "prix": 250000,
+            "description": "Colis alimentaire fragile",
+            "cargaison_id": 1,
+            "etat": "En cours de transport",
+            "progression": 65,
+            "lieu_actuel": "Port de Marseille",
+            "historique": [
+                {
+                    "lieu": "Port de Marseille (Départ)",
+                    "date": "2025-01-12 08:00"
+                },
+                {
+                    "lieu": "Nice",
+                    "date": "2025-01-13 14:30"
+                },
+                {
+                    "lieu": "Toulouse",
+                    "date": "2025-01-14 10:15"
+                },
+                {
+                    "lieu": "Bordeaux (Position actuelle)",
+                    "date": "2025-01-15 16:45"
+                },
+                {
+                    "lieu": "Nantes",
+                    "date": "2025-01-16 12:00"
+                },
+                {
+                    "lieu": "Paris (Destination)",
+                    "date": "2025-01-17 18:00"
+                }
+            ],
+            "route": [
+                {
+                    "lat": 43.2965,
+                    "lng": 5.3698,
+                    "name": "Port de Marseille (Départ)",
+                    "time": "12\/01\/2025 08:00"
+                },
+                {
+                    "lat": 43.7102,
+                    "lng": 7.262,
+                    "name": "Nice",
+                    "time": "13\/01\/2025 14:30"
+                },
+                {
+                    "lat": 43.6047,
+                    "lng": 1.4442,
+                    "name": "Toulouse",
+                    "time": "14\/01\/2025 10:15"
+                },
+                {
+                    "lat": 44.8378,
+                    "lng": -0.5792,
+                    "name": "Bordeaux (Position actuelle)",
+                    "time": "15\/01\/2025 16:45"
+                },
+                {
+                    "lat": 47.2184,
+                    "lng": -1.5536,
+                    "name": "Nantes",
+                    "time": "16\/01\/2025 12:00"
+                },
+                {
+                    "lat": 48.8566,
+                    "lng": 2.3522,
+                    "name": "Paris (Destination)",
+                    "time": "17\/01\/2025 18:00"
+                }
+            ],
+            "currentIndex": 3,
+            "info_expediteur": {
+                "nom": "Jean",
+                "prenom": "Dupont",
+                "adresse": "12 rue de la Mer, Marseille",
+                "tel": "+33123456789",
+                "email": "jean.dupont@example.com"
+            },
+            "info_destinataire": {
+                "nom": "Marie",
+                "prenom": "Martin",
+                "adresse": "45 avenue de Paris, Paris",
+                "tel": "+33198765432",
+                "email": "marie.martin@example.com"
+            }
+        }
+    ]
+}

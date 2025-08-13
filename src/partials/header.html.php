@@ -11,7 +11,7 @@
                     <a href="/accueil" class="text-gray-700 hover:text-primary transition-colors">Accueil</a>
                     <a href="#suivi" class="text-gray-700 hover:text-primary transition-colors">Suivi Colis</a>
                     <a href="#services" class="text-gray-700 hover:text-primary transition-colors">Services</a>
-                    <a href="/dashboard" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors">Espace Gestionnaire</a>
+                    <a href="/dashboard" class="bg-primary text-white px-4 py-1 rounded-lg hover:bg-blue-800 transition-colors">Espace Gestionnaire</a>
                 </nav>
                 <button class="md:hidden">
                     <i class="fas fa-bars text-gray-700"></i>

@@ -21,6 +21,7 @@ $routes = [
     '/403' => 'src/pages/errors/403.html.php',
     '/404' => 'src/pages/errors/404.html.php',
     '/500' => 'src/pages/errors/500.html.php',
+
     
 ];
 
@@ -42,5 +43,42 @@ elseif ($request === '/403') {
 else {
     http_response_code(404);
     require __DIR__.'/src/pages/errors/404.html.php';
+}
+
+if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+
+    // Générer un nouvel ID
+    $newId = 1;
+    if (!empty($db['cargaisons'])) {
+        $ids = array_column($db['cargaisons'], 'id');
+        $newId = max($ids) + 1;
+    }
+
+    $newCargo = [
+        "id" => $newId,
+        "numero_cargaison" => $data['numero_cargaison'],
+        "type_transport" => $data['type_transport'],
+        "lieu_depart" => $data['lieu_depart'],
+        "lieu_arrive" => $data['lieu_arrive'],
+        "distance" => $data['distance'] ?? null,
+        "latitude_depart" => $data['latitude_depart'] ?? null,
+        "longitude_depart" => $data['longitude_depart'] ?? null,
+        "latitude_arrivee" => $data['latitude_arrivee'] ?? null,
+        "longitude_arrivee" => $data['longitude_arrivee'] ?? null,
+        "poids_max" => $data['poids_max'],
+        "date_depart" => $data['date_depart'],
+        "date_arrivee" => $data['date_arrivee'],
+        "description" => $data['description'] ?? ""
+    ];
+
+    $db['cargaisons'][] = $newCargo;
+    file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+
+    header('Content-Type: application/json');
+    echo json_encode(["success" => true, "cargaison" => $newCargo]);
+    exit;
 }
 

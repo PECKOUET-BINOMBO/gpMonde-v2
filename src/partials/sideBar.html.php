@@ -22,7 +22,11 @@
                 <a href="/recherche" class="<?= $currentPath === '/recherche' ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-white' ?> group flex items-center px-2 py-2 text-sm font-medium rounded-md">
                     <i class="fas fa-search mr-3"></i>
                     Recherche
-                </a>                        
+                </a>
+                <a id="logout-btn" href="" class="text-blue-100 hover:bg-blue-800 hover:text-white group flex items-center px-2 py-2 text-sm font-medium rounded-md">
+                    <i class="fa-solid fa-right-from-bracket mr-3"></i>
+                    Se déconnecter
+                </a>
             </nav>
         </div>
         
@@ -32,10 +36,30 @@
                     <i class="fas fa-user text-white text-sm"></i>
                 </div>
                 <div class="ml-3">
-                    <p class="text-sm font-medium text-white">Gestionnaire</p>
-                    <p class="text-xs text-blue-200">En ligne</p>
+                    <p class="text-sm font-medium text-white" id="user-role">
+                        <!-- Rempli par JavaScript -->
+                    </p>
+                    <p class="text-xs text-blue-200" id="user-status">
+                        <!-- Rempli par JavaScript -->
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script type="module">
+    import { getCurrentUser } from '../../dist/services/setupLogout.js';
+    
+    const user = getCurrentUser();
+    const userRoleElement = document.getElementById('user-role');
+    const userStatusElement = document.getElementById('user-status');
+    
+    if (user) {
+        if (userRoleElement) userRoleElement.textContent = user.role === 'gestionnaire' ? 'Gestionnaire' : 'Utilisateur';
+        if (userStatusElement) userStatusElement.textContent = 'En ligne';
+    } else {
+        if (userRoleElement) userRoleElement.textContent = 'Invité';
+        if (userStatusElement) userStatusElement.textContent = 'Non connecté';
+    }
+</script>

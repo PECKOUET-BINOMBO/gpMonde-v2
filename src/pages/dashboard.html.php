@@ -206,10 +206,10 @@
                     </button>
                 </div>
 
-                <form class="space-y-4">
+                <form class="space-y-4" id="newCargoForm">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Type de transport</label>
-                        <select id="transportType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        <select name="transportType" id="transportType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             <option>Maritime</option>
                             <option>Aérien</option>
                             <option>Routier</option>
@@ -220,14 +220,11 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lieu de départ</label>
                             <div class="relative">
-                                <input type="text" id="departurePlace"
+                                <input name="lieu_depart" type="text" id="departurePlace"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                     placeholder="Tapez une ville (ex: Dakar, Sénégal)"
                                     autocomplete="off">
-                                <!-- <button type="button" onclick="geocodePlace('departure')"
-                                    class="absolute right-2 top-2 text-primary hover:text-blue-800">
-                                    <i class="fas fa-search"></i>
-                                </button> -->
+                                
                                 <!-- Liste de suggestions -->
                                 <div id="departureSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
                             </div>
@@ -239,14 +236,11 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lieu d'arrivée</label>
                             <div class="relative">
-                                <input type="text" id="arrivalPlace"
+                                <input name="lieu_arrive" type="text" id="arrivalPlace"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                     placeholder="Tapez une ville (ex: Libreville, Gabon)"
                                     autocomplete="off">
-                                <!-- <button type="button" onclick="geocodePlace('arrival')"
-                                    class="absolute right-2 top-2 text-primary hover:text-blue-800">
-                                    <i class="fas fa-search"></i>
-                                </button> -->
+                            
                                 <!-- Liste de suggestions -->
                                 <div id="arrivalSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
                             </div>
@@ -259,15 +253,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Distance (km)</label>
-                            <input type="text" id="distance" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                            <input name="distance" type="text" id="distance" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Latitude sélectionnée</label>
-                            <input type="text" id="selectedLat" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                            <input name="latitude" type="text" id="selectedLat" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Longitude sélectionnée</label>
-                            <input type="text" id="selectedLng" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                            <input name="longitude" type="text" id="selectedLng" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
                         </div>
                     </div>
 
@@ -278,7 +272,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Poids maximum (kg)</label>
-                        <input type="number" id="maxWeight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="1000">
+                        <input type="number" id="maxWeight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="1000"  name="poids_max">
                     </div>
 
                     <div class="flex space-x-3 pt-4">
@@ -680,7 +674,8 @@
             }
         });
     </script>
-
+<script type="module" src="../../dist/services/setupLogout.js"></script>
+<script type="module" src="../../dist/services/createCargo.js"></script>
     <style>
         .custom-marker {
             background: transparent !important;
