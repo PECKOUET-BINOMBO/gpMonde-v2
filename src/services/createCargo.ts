@@ -56,22 +56,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const result = await response.json();
       
-      if (result.success) {
-        statusMessage.textContent = 'Cargaison créée avec succès !';
-        statusMessage.className += ' text-green-600';
-        
-        // Fermer le modal après 2 secondes
-        setTimeout(() => {
-          if (modal) modal.classList.add('hidden');
-          form.reset();
-          statusMessage.textContent = '';
-          
-          // Recharger la page pour voir la nouvelle cargaison
-          window.location.reload();
-        }, 2000);
-      } else {
-        throw new Error(result.message || 'Erreur lors de la création');
-      }
+      // createCargo.ts
+if (result.success) {
+    // Stocker le message dans localStorage pour l'afficher sur le dashboard
+    localStorage.setItem('cargoCreationSuccess', 'Cargaison créée avec succès !');
+    
+    // Fermer le modal et recharger
+    setTimeout(() => {
+        if (modal) modal.classList.add('hidden');
+        form.reset();
+        window.location.href = '/dashboard'; // Rediriger vers le dashboard
+    }, 500);
+} else {
+    throw new Error(result.message || 'Erreur lors de la création');
+}
     } catch (err) {
       let errorMsg = 'Erreur serveur';
       if (err instanceof Error) {

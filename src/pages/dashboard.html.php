@@ -41,6 +41,10 @@
             <?php include __DIR__ . '/../partials/topBar.html.php'; ?>
             <!-- Dashboard content -->
             <main class="flex-1 overflow-y-auto p-6">
+
+                <div id="successMessage" class="hidden my-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded relative">
+                    <p></p>
+                </div>
                 <!-- Stats Cards -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <div class="bg-white rounded-lg shadow p-6">
@@ -224,7 +228,7 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                     placeholder="Tapez une ville (ex: Dakar, Sénégal)"
                                     autocomplete="off">
-                                
+
                                 <!-- Liste de suggestions -->
                                 <div id="departureSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
                             </div>
@@ -240,7 +244,7 @@
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
                                     placeholder="Tapez une ville (ex: Libreville, Gabon)"
                                     autocomplete="off">
-                            
+
                                 <!-- Liste de suggestions -->
                                 <div id="arrivalSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
                             </div>
@@ -272,7 +276,7 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Poids maximum (kg)</label>
-                        <input type="number" id="maxWeight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="1000"  name="poids_max">
+                        <input type="number" id="maxWeight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="1000" name="poids_max">
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -314,7 +318,7 @@
 
         function openNewCargoModal() {
             document.getElementById('newCargoModal').classList.remove('hidden');
-            
+
             // Initialiser la carte si ce n'est pas déjà fait
             if (!cargoMap) {
                 initCargoMap();
@@ -322,7 +326,7 @@
                 // Réinitialiser la carte si elle existe déjà
                 cargoMap.invalidateSize();
             }
-            
+
             // Réinitialiser les sélections
             resetMapSelections();
         }
@@ -334,20 +338,23 @@
         function initCargoMap() {
             // Créer la carte centrée sur l'Europe
             cargoMap = L.map('cargoMap').setView([46.603354, 1.888334], 5);
-            
+
             // Ajouter la couche OpenStreetMap
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors'
             }).addTo(cargoMap);
-            
+
             // Gérer le clic sur la carte
             cargoMap.on('click', function(e) {
-                const { lat, lng } = e.latlng;
-                
+                const {
+                    lat,
+                    lng
+                } = e.latlng;
+
                 // Mettre à jour les coordonnées sélectionnées
                 document.getElementById('selectedLat').value = lat.toFixed(6);
                 document.getElementById('selectedLng').value = lng.toFixed(6);
-                
+
                 // Mettre à jour le marqueur approprié
                 if (currentSelection === 'departure') {
                     updateDeparture(lat, lng);
@@ -358,11 +365,11 @@
                     // Géocodage inverse pour obtenir le nom de la ville
                     reverseGeocode(lat, lng, 'arrival');
                 }
-                
+
                 // Calculer la distance si les deux points sont définis
                 calculateDistance();
             });
-            
+
             // Gérer le focus sur les champs pour déterminer la sélection active
             document.getElementById('departurePlace').addEventListener('focus', () => {
                 currentSelection = 'departure';
@@ -380,15 +387,15 @@
 
         function setupAutocomplete(inputId, type) {
             const input = document.getElementById(inputId);
-            
+
             input.addEventListener('input', function() {
                 const query = this.value.trim();
-                
+
                 // Effacer le timeout précédent
                 if (searchTimeout) {
                     clearTimeout(searchTimeout);
                 }
-                
+
                 if (query.length >= 3) {
                     // Attendre 500ms après la dernière saisie avant de chercher
                     searchTimeout = setTimeout(() => {
@@ -419,7 +426,7 @@
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`);
                 const places = await response.json();
-                
+
                 showSuggestions(places, type);
             } catch (error) {
                 console.error('Erreur lors de la recherche:', error);
@@ -428,14 +435,14 @@
 
         function showSuggestions(places, type) {
             const suggestionsDiv = document.getElementById(`${type}Suggestions`);
-            
+
             if (places.length === 0) {
                 hideSuggestions(type);
                 return;
             }
-            
+
             suggestionsDiv.innerHTML = '';
-            
+
             places.forEach(place => {
                 const div = document.createElement('div');
                 div.className = 'px-3 py-2 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0';
@@ -443,14 +450,14 @@
                     <div class="font-medium">${place.display_name}</div>
                     <div class="text-xs text-gray-500">${place.lat}, ${place.lon}</div>
                 `;
-                
+
                 div.addEventListener('click', () => {
                     selectPlace(place, type);
                 });
-                
+
                 suggestionsDiv.appendChild(div);
             });
-            
+
             suggestionsDiv.classList.remove('hidden');
         }
 
@@ -462,27 +469,27 @@
         function selectPlace(place, type) {
             const lat = parseFloat(place.lat);
             const lng = parseFloat(place.lon);
-            
+
             // Mettre à jour le champ de saisie
             document.getElementById(`${type}Place`).value = place.display_name;
-            
+
             // Mettre à jour la carte
             if (type === 'departure') {
                 updateDeparture(lat, lng);
             } else {
                 updateArrival(lat, lng);
             }
-            
+
             // Mettre à jour les coordonnées sélectionnées
             document.getElementById('selectedLat').value = lat.toFixed(6);
             document.getElementById('selectedLng').value = lng.toFixed(6);
-            
+
             // Cacher les suggestions
             hideSuggestions(type);
-            
+
             // Calculer la distance
             calculateDistance();
-            
+
             // Afficher le statut de succès
             showStatus(type, `✓ ${place.display_name}`, 'success');
         }
@@ -490,26 +497,26 @@
         async function geocodePlace(type) {
             const input = document.getElementById(`${type}Place`);
             const query = input.value.trim();
-            
+
             if (!query) {
                 showStatus(type, 'Veuillez saisir un nom de lieu', 'error');
                 return;
             }
-            
+
             showStatus(type, 'Recherche en cours...', 'loading');
-            
+
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1&addressdetails=1`);
                 const places = await response.json();
-                
+
                 if (places.length === 0) {
                     showStatus(type, 'Lieu non trouvé. Essayez avec plus de détails (ex: "Paris, France")', 'error');
                     return;
                 }
-                
+
                 const place = places[0];
                 selectPlace(place, type);
-                
+
             } catch (error) {
                 console.error('Erreur lors du géocodage:', error);
                 showStatus(type, 'Erreur lors de la recherche', 'error');
@@ -520,7 +527,7 @@
             try {
                 const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`);
                 const place = await response.json();
-                
+
                 if (place && place.display_name) {
                     document.getElementById(`${type}Place`).value = place.display_name;
                     showStatus(type, `✓ ${place.display_name}`, 'success');
@@ -533,10 +540,10 @@
         function showStatus(type, message, status) {
             const statusDiv = document.getElementById(`${type}Status`);
             statusDiv.textContent = message;
-            
+
             // Supprimer les anciennes classes de statut
             statusDiv.classList.remove('text-green-600', 'text-red-600', 'text-blue-600');
-            
+
             // Ajouter la nouvelle classe selon le statut
             switch (status) {
                 case 'success':
@@ -555,7 +562,7 @@
             // Mettre à jour les champs cachés
             document.getElementById('departureLat').value = lat;
             document.getElementById('departureLng').value = lng;
-            
+
             // Mettre à jour ou créer le marqueur
             if (departureMarker) {
                 departureMarker.setLatLng([lat, lng]);
@@ -570,11 +577,11 @@
                         iconAnchor: [16, 16]
                     })
                 }).addTo(cargoMap);
-                
+
                 // Ajouter un popup
                 departureMarker.bindPopup("Point de départ");
             }
-            
+
             // Mettre à jour la ligne de route si nécessaire
             updateRouteLine();
         }
@@ -583,7 +590,7 @@
             // Mettre à jour les champs cachés
             document.getElementById('arrivalLat').value = lat;
             document.getElementById('arrivalLng').value = lng;
-            
+
             // Mettre à jour ou créer le marqueur
             if (arrivalMarker) {
                 arrivalMarker.setLatLng([lat, lng]);
@@ -598,11 +605,11 @@
                         iconAnchor: [16, 16]
                     })
                 }).addTo(cargoMap);
-                
+
                 // Ajouter un popup
                 arrivalMarker.bindPopup("Point d'arrivée");
             }
-            
+
             // Mettre à jour la ligne de route si nécessaire
             updateRouteLine();
         }
@@ -612,21 +619,23 @@
             if (routeLine) {
                 cargoMap.removeLayer(routeLine);
             }
-            
+
             // Dessiner une nouvelle ligne si les deux points sont définis
             if (departureMarker && arrivalMarker) {
                 const departureLatLng = departureMarker.getLatLng();
                 const arrivalLatLng = arrivalMarker.getLatLng();
-                
+
                 routeLine = L.polyline([departureLatLng, arrivalLatLng], {
                     color: '#3b82f6',
                     weight: 4,
                     dashArray: '10, 5',
                     opacity: 0.8
                 }).addTo(cargoMap);
-                
+
                 // Ajuster la vue pour voir toute la route
-                cargoMap.fitBounds([departureLatLng, arrivalLatLng], { padding: [50, 50] });
+                cargoMap.fitBounds([departureLatLng, arrivalLatLng], {
+                    padding: [50, 50]
+                });
             }
         }
 
@@ -634,18 +643,18 @@
             if (departureMarker && arrivalMarker) {
                 const departureLatLng = departureMarker.getLatLng();
                 const arrivalLatLng = arrivalMarker.getLatLng();
-                
+
                 // Calculer la distance en km (formule de Haversine)
                 const R = 6371; // Rayon de la Terre en km
                 const dLat = (arrivalLatLng.lat - departureLatLng.lat) * Math.PI / 180;
                 const dLng = (arrivalLatLng.lng - departureLatLng.lng) * Math.PI / 180;
-                const a = 
-                    Math.sin(dLat/2) * Math.sin(dLat/2) +
-                    Math.cos(departureLatLng.lat * Math.PI / 180) * Math.cos(arrivalLatLng.lat * Math.PI / 180) * 
-                    Math.sin(dLng/2) * Math.sin(dLng/2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                const a =
+                    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(departureLatLng.lat * Math.PI / 180) * Math.cos(arrivalLatLng.lat * Math.PI / 180) *
+                    Math.sin(dLng / 2) * Math.sin(dLng / 2);
+                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
                 const distance = R * c;
-                
+
                 document.getElementById('distance').value = Math.round(distance) + ' km';
             }
         }
@@ -655,11 +664,11 @@
             if (departureMarker) cargoMap.removeLayer(departureMarker);
             if (arrivalMarker) cargoMap.removeLayer(arrivalMarker);
             if (routeLine) cargoMap.removeLayer(routeLine);
-            
+
             departureMarker = null;
             arrivalMarker = null;
             routeLine = null;
-            
+
             // Réinitialiser les champs
             document.getElementById('departurePlace').value = '';
             document.getElementById('arrivalPlace').value = '';
@@ -670,15 +679,15 @@
             document.getElementById('distance').value = '';
             document.getElementById('selectedLat').value = '';
             document.getElementById('selectedLng').value = '';
-            
+
             // Réinitialiser les statuts
             document.getElementById('departureStatus').textContent = '';
             document.getElementById('arrivalStatus').textContent = '';
-            
+
             // Cacher les suggestions
             hideSuggestions('departure');
             hideSuggestions('arrival');
-            
+
             // Par défaut, sélectionner le départ
             currentSelection = 'departure';
         }
@@ -689,9 +698,25 @@
                 closeNewCargoModal();
             }
         });
+
+        // Afficher le message de succès s'il existe dans localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            const successMessage = localStorage.getItem('cargoCreationSuccess');
+            if (successMessage) {
+                const messageDiv = document.getElementById('successMessage');
+                messageDiv.textContent = successMessage;
+                messageDiv.classList.remove('hidden');
+
+                // Supprimer le message après 5 secondes
+                setTimeout(() => {
+                    messageDiv.classList.add('hidden');
+                    localStorage.removeItem('cargoCreationSuccess');
+                }, 5000);
+            }
+        });
     </script>
-<script type="module" src="../../dist/services/setupLogout.js"></script>
-<script type="module" src="../../dist/services/createCargo.js"></script>
+    <script type="module" src="../../dist/services/setupLogout.js"></script>
+    <script type="module" src="../../dist/services/createCargo.js"></script>
     <style>
         .custom-marker {
             background: transparent !important;
