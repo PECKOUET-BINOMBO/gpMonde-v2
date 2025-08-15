@@ -209,7 +209,7 @@
                 <form class="space-y-4" id="newCargoForm">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Type de transport</label>
-                        <select name="transportType" id="transportType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        <select name="type_transport" id="transportType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                             <option>Maritime</option>
                             <option>Aérien</option>
                             <option>Routier</option>
@@ -229,8 +229,8 @@
                                 <div id="departureSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
                             </div>
                             <div id="departureStatus" class="text-sm mt-1"></div>
-                            <input type="hidden" id="departureLat">
-                            <input type="hidden" id="departureLng">
+                            <input type="hidden" id="departureLat" name="latitude_depart">
+                            <input type="hidden" id="departureLng" name="longitude_depart">
                         </div>
 
                         <div>
@@ -245,8 +245,8 @@
                                 <div id="arrivalSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
                             </div>
                             <div id="arrivalStatus" class="text-sm mt-1"></div>
-                            <input type="hidden" id="arrivalLat">
-                            <input type="hidden" id="arrivalLng">
+                            <input type="hidden" id="arrivalLat" name="latitude_arrivee">
+                            <input type="hidden" id="arrivalLng" name="longitude_arrivee">
                         </div>
                     </div>
 
@@ -273,6 +273,22 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Poids maximum (kg)</label>
                         <input type="number" id="maxWeight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="1000"  name="poids_max">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date de départ</label>
+                            <input type="datetime-local" id="dateDepart" name="date_depart" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date d'arrivée</label>
+                            <input type="datetime-local" id="dateArrivee" name="date_arrivee" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="description" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Description de la cargaison..."></textarea>
                     </div>
 
                     <div class="flex space-x-3 pt-4">

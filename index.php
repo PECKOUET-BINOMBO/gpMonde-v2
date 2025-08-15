@@ -29,26 +29,19 @@ $request = $_SERVER['REQUEST_URI'];
 
 
 
-if (array_key_exists($request, $routes)) {
-    require __DIR__.'/'.$routes[$request];
-} 
-elseif ($request === '/500') {
-    http_response_code(500);
-    require __DIR__.'/src/pages/errors/500.html.php';
-}
-elseif ($request === '/403') {
-    http_response_code(403);
-    require __DIR__.'/src/pages/errors/403.html.php';
-}
-else {
-    http_response_code(404);
-    require __DIR__.'/src/pages/errors/404.html.php';
-}
-
+// Gestion de l'API d'abord !
 if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $dbPath = __DIR__ . '/db.json';
     $db = json_decode(file_get_contents($dbPath), true);
+
+    // Validation des données
+    if (empty($data['type_transport']) || empty($data['lieu_depart']) || empty($data['lieu_arrive'])) {
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Tous les champs obligatoires doivent être remplis"]);
+        exit;
+    }
 
     // Générer un nouvel ID
     $newId = 1;
@@ -59,7 +52,7 @@ if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $newCargo = [
         "id" => $newId,
-        "numero_cargaison" => $data['numero_cargaison'],
+        "numero_cargaison" => $data['numero_cargaison'] ?? 'CARG' . rand(100000, 999999),
         "type_transport" => $data['type_transport'],
         "lieu_depart" => $data['lieu_depart'],
         "lieu_arrive" => $data['lieu_arrive'],
@@ -75,10 +68,31 @@ if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     ];
 
     $db['cargaisons'][] = $newCargo;
-    file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-    header('Content-Type: application/json');
-    echo json_encode(["success" => true, "cargaison" => $newCargo]);
+    
+    if (file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        header('Content-Type: application/json');
+        echo json_encode(["success" => true, "cargaison" => $newCargo]);
+    } else {
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(["success" => false, "message" => "Erreur lors de l'écriture dans la base de données"]);
+    }
     exit;
 }
 
+// Ensuite, routes classiques
+if (array_key_exists($request, $routes)) {
+    require __DIR__.'/'.$routes[$request];
+} 
+elseif ($request === '/500') {
+    http_response_code(500);
+    require __DIR__.'/src/pages/errors/500.html.php';
+}
+elseif ($request === '/403') {
+    http_response_code(403);
+    require __DIR__.'/src/pages/errors/403.html.php';
+}
+else {
+    http_response_code(404);
+    require __DIR__.'/src/pages/errors/404.html.php';
+}
