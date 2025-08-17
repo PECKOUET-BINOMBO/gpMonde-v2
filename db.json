@@ -11,7 +11,6 @@
             "created_at": "2023-08-08 12:00:00",
             "updated_at": "2023-08-08 12:00:00"
         }
-    
     ],
     "cargaisons": [
         {
@@ -26,10 +25,29 @@
             "latitude_arrivee": 48.8566,
             "longitude_arrivee": 2.3522,
             "poids_max": 1000,
-            "poids_actuel": 1500,
+            "poids_actuel": 700,
             "etat": "ouvert",
             "date_depart": "2025-01-12 08:00",
-            "date_arrivee": "2025-01-17 18:00"
+            "date_arrivee": "2025-01-17 18:00",
+            "description": "Cargaison de produits alimentaires"
+        },
+        {
+            "id": 2,
+            "numero_cargaison": "CARG773770",
+            "type_transport": "Routier",
+            "lieu_depart": "Libreville, Estuaire, Gabon",
+            "lieu_arrive": "Oyem, Woleu, Woleu-Ntem, Gabon",
+            "distance": "272 km",
+            "latitude_depart": "0.4086518",
+            "longitude_depart": "9.4418849",
+            "latitude_arrivee": "1.5997904",
+            "longitude_arrivee": "11.5751003",
+            "poids_max": 1000,
+            "poids_actuel": 500,
+            "etat": "ouvert",
+            "date_depart": "2025-08-18T20:29:00.000Z",
+            "date_arrivee": "2025-08-19T20:29:00.000Z",
+            "description": ""
         }
     ],
     "colis": [
@@ -44,46 +62,6 @@
             "description": "Colis alimentaire fragile",
             "cargaison_id": 1,
             "etat": "En cours de transport",
-            "lieu_actuel": "Port de Marseille",
-            "route": [
-                {
-                    "lat": 43.2965,
-                    "lng": 5.3698,
-                    "name": "Port de Marseille (Départ)",
-                    "time": "12\/01\/2025 08:00"
-                },
-                {
-                    "lat": 43.7102,
-                    "lng": 7.262,
-                    "name": "Nice",
-                    "time": "13\/01\/2025 14:30"
-                },
-                {
-                    "lat": 43.6047,
-                    "lng": 1.4442,
-                    "name": "Toulouse",
-                    "time": "14\/01\/2025 10:15"
-                },
-                {
-                    "lat": 44.8378,
-                    "lng": -0.5792,
-                    "name": "Bordeaux (Position actuelle)",
-                    "time": "15\/01\/2025 16:45"
-                },
-                {
-                    "lat": 47.2184,
-                    "lng": -1.5536,
-                    "name": "Nantes",
-                    "time": "16\/01\/2025 12:00"
-                },
-                {
-                    "lat": 48.8566,
-                    "lng": 2.3522,
-                    "name": "Paris (Destination)",
-                    "time": "17\/01\/2025 18:00"
-                }
-            ],
-            "currentIndex": 3,
             "info_expediteur": {
                 "nom": "Jean",
                 "prenom": "Dupont",
@@ -98,6 +76,49 @@
                 "tel": "+33198765432",
                 "email": "marie.martin@example.com"
             }
+        },
+        {
+            "id": 2,
+            "numero_colis": "CG29N3C6",
+            "cargaison_id": 2,
+            "nbr_colis": 2,
+            "poids": 500,
+            "type_produit": "alimentaire",
+            "type_transport": "maritime",
+            "prix": 750000,
+            "description": "",
+            "etat": "En attente",
+            "lieu_actuel": "Libreville, Estuaire, Gabon",
+            "route": [
+                {
+                    "lat": "0.4086518",
+                    "lng": "9.4418849",
+                    "name": "Libreville, Estuaire, Gabon (Départ)",
+                    "time": "18\/08\/2025 22:29"
+                },
+                {
+                    "lat": "1.5997904",
+                    "lng": "11.5751003",
+                    "name": "Oyem, Woleu, Woleu-Ntem, Gabon (Destination)",
+                    "time": "19\/08\/2025 22:29"
+                }
+            ],
+            "currentIndex": 0,
+            "info_expediteur": {
+                "nom": "PECKOUET-BINOMBO",
+                "prenom": "Paul Émile",
+                "adresse": "Ouest Foire\nAppartement",
+                "tel": "+221772995851",
+                "email": "apeckouet@gmail.com"
+            },
+            "info_destinataire": {
+                "nom": "NKONDO BINOMBO",
+                "prenom": "Carline Erice Gloria",
+                "adresse": "Kalikak",
+                "tel": "+221772995855",
+                "email": "carlineerice@gmail.com"
+            },
+            "created_at": "2025-08-17 22:32:15"
         }
     ]
 }

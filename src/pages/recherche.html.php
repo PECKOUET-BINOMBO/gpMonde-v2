@@ -338,23 +338,7 @@
                             </div>
                         </div>
                         
-                        <div class="bg-gray-50 rounded-lg p-4">
-                            <h4 class="font-medium text-gray-900 mb-3">Actions Rapides</h4>
-                            <div class="space-y-2">
-                                <button onclick="markAsRetrieved()" class="w-full bg-accent hover:bg-green-600 text-white py-2 px-4 rounded-md font-medium transition-colors">
-                                    <i class="fas fa-check mr-2"></i>
-                                    Marquer comme récupéré
-                                </button>
-                                <button onclick="markAsLost()" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md font-medium transition-colors">
-                                    <i class="fas fa-exclamation-triangle mr-2"></i>
-                                    Marquer comme perdu
-                                </button>
-                                <button onclick="archivePackageFromModal()" class="w-full bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-md font-medium transition-colors">
-                                    <i class="fas fa-archive mr-2"></i>
-                                    Archiver
-                                </button>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 

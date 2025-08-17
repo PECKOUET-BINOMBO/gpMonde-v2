@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,12 +24,22 @@
                     },
                     keyframes: {
                         fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' }
+                            '0%': {
+                                opacity: '0'
+                            },
+                            '100%': {
+                                opacity: '1'
+                            }
                         },
                         slideUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                            '0%': {
+                                opacity: '0',
+                                transform: 'translateY(20px)'
+                            },
+                            '100%': {
+                                opacity: '1',
+                                transform: 'translateY(0)'
+                            }
                         }
                     }
                 }
@@ -37,21 +48,22 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Ajoute Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" 
-          crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
     <!-- Ajoute Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
-            crossorigin=""></script>
-            <script type="importmap">
-{
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+    <script type="importmap">
+        {
   "imports": {
     "leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js"
   }
 }
 </script>
 </head>
+
 <body class="h-full bg-gray-50">
     <!-- Header -->
     <?php include __DIR__ . '/../partials/header.html.php'; ?>
@@ -86,135 +98,141 @@
                 <h3 class="text-3xl font-bold text-gray-900 mb-4">Suivre votre Colis</h3>
                 <p class="text-lg text-gray-600">Entrez votre code de suivi pour connaître l'état de votre colis</p>
             </div>
-            
-           <!-- Formulaire de recherche -->
-        <div class="bg-white rounded-xl shadow-sm p-6 mb-8 animate-slide-up">
-            <form id="trackingForm" class="flex flex-col md:flex-row gap-4">
-                <div class="flex-1">
-                    <label for="trackingCode" class="block text-sm font-medium text-gray-700 mb-2">
-                        Code de suivi
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-search text-gray-400"></i>
+
+            <!-- Formulaire de recherche -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-8 animate-slide-up">
+                <form id="trackingForm" class="flex flex-col md:flex-row gap-4">
+                    <div class="flex-1">
+                        <label for="trackingCode" class="block text-sm font-medium text-gray-700 mb-2">
+                            Code de suivi
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" id="trackingCode" name="trackingCode"
+                                class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                                placeholder="Ex: CG123456, CG789012, CG345678">
                         </div>
-                        <input type="text" id="trackingCode" name="trackingCode" 
-                               class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                               placeholder="Ex: CG123456, CG789012, CG345678">
                     </div>
-                </div>
-                <div class="flex items-end">
-                    <button type="submit" 
+                    <div class="flex items-end">
+                        <button type="submit"
                             class="w-full md:w-auto px-6 py-3 bg-primary hover:bg-blue-800 text-white font-semibold rounded-lg transition-colors transform hover:scale-105">
-                        <i class="fas fa-search mr-2"></i>
-                        Rechercher
-                    </button>
-                </div>
-            </form>
-        </div>
+                            <i class="fas fa-search mr-2"></i>
+                            Rechercher
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-        <!-- Résultats de suivi -->
-        <div id="trackingResults" class="hidden">
-            <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Informations du colis -->
-                <div class="lg:col-span-1">
-                    <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-                        <div class="flex items-center mb-4">
-                            <i class="fas fa-box text-primary text-2xl mr-3"></i>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900" id="packageTitle">Colis #CG123456</h3>
-                                <p class="text-sm text-gray-600" id="packageType">Transport Maritime</p>
+            <!-- Résultats de suivi -->
+            <div id="trackingResults" class="hidden">
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Informations du colis -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-box text-primary text-2xl mr-3"></i>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-900" id="packageTitle"></h3>
+                                    <p class="text-sm text-gray-600" id="packageType"></p>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <div class="space-y-3 mb-6">
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Expéditeur:</span>
-                                <span class="text-sm font-medium" id="sender">Jean Dupont</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Destinataire:</span>
-                                <span class="text-sm font-medium" id="recipient">Marie Martin</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Poids:</span>
-                                <span class="text-sm font-medium" id="weight">15.5 kg</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-sm text-gray-600">Valeur:</span>
-                                <span class="text-sm font-medium" id="value">250 000 FCFA</span>
-                            </div>
-                        </div>                       
 
-                        <!-- Actions -->
-                        <div class="space-y-3">
-                            <button onclick="centerMapOnPackage()" 
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Expéditeur:</span>
+                                    <span class="text-sm font-medium" id="sender"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Destinataire:</span>
+                                    <span class="text-sm font-medium" id="recipient"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Lieu de départ:</span>
+                                    <span class="text-sm font-medium" id="departure"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Lieu d'arrivée:</span>
+                                    <span class="text-sm font-medium" id="arrival"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Poids:</span>
+                                    <span class="text-sm font-medium" id="weight"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">Montant:</span>
+                                    <span class="text-sm font-medium" id="value"></span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-sm text-gray-600">État :</span>
+                                    <span class="text-sm font-medium" id="packageStatus"></span>
+                                </div>
+                                <div class="flex justify-between">
+    <span class="text-sm text-gray-600">Description :</span>
+    <span class="text-sm font-medium" id="description"></span>
+</div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="space-y-3">
+                                <button onclick="centerMapOnPackage()"
                                     class="w-full px-4 py-2 bg-secondary hover:bg-orange-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-crosshairs mr-2"></i>
-                                Centrer sur le colis
-                            </button>
-                            
+                                    <i class="fas fa-crosshairs mr-2"></i>
+                                    Centrer sur le colis
+                                </button>
+
+                            </div>
                         </div>
+
+
                     </div>
 
-                    
-                </div>
+                    <!-- Carte -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold text-gray-900">Localisation en temps réel</h3>
+                                <div class="flex items-center space-x-2">
 
-                <!-- Carte -->
-                <div class="lg:col-span-2">
-                    <div class="bg-white rounded-xl shadow-sm p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-semibold text-gray-900">Localisation en temps réel</h3>
-                            <div class="flex items-center space-x-2">
-                                
-                                <button onclick="toggleFullscreen()" 
+                                    <button onclick="toggleFullscreen()"
                                         class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                                    <i class="fas fa-expand mr-1"></i>
-                                    Plein écran
-                                </button>
+                                        <i class="fas fa-expand mr-1"></i>
+                                        Plein écran
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <!-- Carte Leaflet -->
-                        <div id="map" class="w-full h-96 lg:h-[500px] rounded-lg border border-gray-200"></div>
-                        
-                        <!-- Légende -->
-                        <div class="mt-4 flex flex-wrap gap-4 text-sm">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
-                                <span class="text-gray-600">Point de départ</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-primary rounded-full mr-2 animate-pulse"></div>
-                                <span class="text-gray-600">Position actuelle</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
-                                <span class="text-gray-600">Destination</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-4 h-1 bg-blue-400 mr-2"></div>
-                                <span class="text-gray-600">Trajet parcouru</span>
-                            </div>
-                            <div class="flex items-center">
-                                <div class="w-4 h-1 border-2 border-dashed border-gray-400 mr-2"></div>
-                                <span class="text-gray-600">Trajet restant</span>
+
+                            <!-- Carte Leaflet -->
+                            <div id="map" class="w-full h-96 lg:h-[500px] rounded-lg border border-gray-200"></div>
+
+                            <!-- Légende -->
+                            <div class="mt-4 flex flex-wrap gap-4 text-sm">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                    <span class="text-gray-600">Point de départ</span>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+                                    <span class="text-gray-600">Destination</span>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Message d'erreur -->
-        <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-            <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-4"></i>
-            <h3 class="text-lg font-semibold text-red-900 mb-2">Colis non trouvé</h3>
-            <p class="text-red-700 mb-4">Le code de suivi que vous avez saisi n'existe pas ou est incorrect.</p>
-            <button onclick="resetSearch()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
-                Nouvelle recherche
-            </button>
-        </div>
+            <!-- Message d'erreur -->
+            <div id="errorMessage" class="hidden bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+                <i class="fas fa-exclamation-triangle text-red-500 text-3xl mb-4"></i>
+                <h3 class="text-lg font-semibold text-red-900 mb-2">Colis non trouvé</h3>
+                <p class="text-red-700 mb-4">Le code de suivi que vous avez saisi n'existe pas ou est incorrect.</p>
+                <button onclick="resetSearch()" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">
+                    Nouvelle recherche
+                </button>
+            </div>
         </div>
     </section>
 
@@ -225,7 +243,7 @@
                 <h3 class="text-3xl font-bold text-gray-900 mb-4">Nos Services</h3>
                 <p class="text-lg text-gray-600">Transport adapté à tous vos besoins</p>
             </div>
-            
+
             <div class="grid md:grid-cols-3 gap-8">
                 <div class="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
                     <div class="text-center">
@@ -234,7 +252,7 @@
                         <p class="text-gray-600">Solution économique pour vos envois volumineux</p>
                     </div>
                 </div>
-                
+
                 <div class="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
                     <div class="text-center">
                         <i class="fas fa-plane text-4xl text-secondary mb-4"></i>
@@ -242,7 +260,7 @@
                         <p class="text-gray-600">Livraison rapide pour vos envois urgents</p>
                     </div>
                 </div>
-                
+
                 <div class="bg-white rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
                     <div class="text-center">
                         <i class="fas fa-truck text-4xl text-accent mb-4"></i>
@@ -255,29 +273,29 @@
     </section>
 
     <!-- Footer -->
-   <?php include __DIR__ . '/../partials/footer.html.php'; ?>
+    <?php include __DIR__ . '/../partials/footer.html.php'; ?>
 
     <script type="module" src="../../dist/models/accueil.js"></script>
 
-     <style>
+    <style>
         .custom-marker {
             background: transparent !important;
             border: none !important;
         }
-        
+
         .animation-marker {
             background: transparent !important;
             border: none !important;
         }
-        
+
         .leaflet-popup-content-wrapper {
             border-radius: 8px;
         }
-        
+
         .leaflet-popup-content {
             margin: 8px 12px;
         }
     </style>
 </body>
-</html>
 
+</html>

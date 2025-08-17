@@ -55,21 +55,21 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">Nom *</label>
-                                    <input type="text" id="nom" name="nom" 
+                                    <input type="text" id="nom" name="nom"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="Nom de famille">
                                 </div>
 
                                 <div>
                                     <label for="prenom" class="block text-sm font-medium text-gray-700 mb-2">Prénom *</label>
-                                    <input type="text" id="prenom" name="prenom" 
+                                    <input type="text" id="prenom" name="prenom"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="Prénom">
                                 </div>
 
                                 <div>
                                     <label for="telephone" class="block text-sm font-medium text-gray-700 mb-2">Téléphone *</label>
-                                    <input type="tel" id="telephone" name="telephone" 
+                                    <input type="tel" id="telephone" name="telephone"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="+221 77 123 45 67">
                                 </div>
@@ -83,7 +83,7 @@
 
                                 <div class="md:col-span-2">
                                     <label for="adresse" class="block text-sm font-medium text-gray-700 mb-2">Adresse *</label>
-                                    <textarea id="adresse" name="adresse" rows="3" 
+                                    <textarea id="adresse" name="adresse" rows="3"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="Adresse complète"></textarea>
                                 </div>
@@ -100,21 +100,21 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label for="dest_nom" class="block text-sm font-medium text-gray-700 mb-2">Nom *</label>
-                                    <input type="text" id="dest_nom" name="dest_nom" 
+                                    <input type="text" id="dest_nom" name="dest_nom"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="Nom du destinataire">
                                 </div>
 
                                 <div>
                                     <label for="dest_prenom" class="block text-sm font-medium text-gray-700 mb-2">Prénom *</label>
-                                    <input type="text" id="dest_prenom" name="dest_prenom" 
+                                    <input type="text" id="dest_prenom" name="dest_prenom"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="Prénom du destinataire">
                                 </div>
 
                                 <div>
                                     <label for="dest_telephone" class="block text-sm font-medium text-gray-700 mb-2">Téléphone *</label>
-                                    <input type="tel" id="dest_telephone" name="dest_telephone" 
+                                    <input type="tel" id="dest_telephone" name="dest_telephone"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="+221 77 123 45 67">
                                 </div>
@@ -128,7 +128,7 @@
 
                                 <div class="md:col-span-2">
                                     <label for="dest_adresse" class="block text-sm font-medium text-gray-700 mb-2">Adresse *</label>
-                                    <textarea id="dest_adresse" name="dest_adresse" rows="3" 
+                                    <textarea id="dest_adresse" name="dest_adresse" rows="3"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="Adresse complète du destinataire"></textarea>
                                 </div>
@@ -145,21 +145,21 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div>
                                     <label for="nombre_colis" class="block text-sm font-medium text-gray-700 mb-2">Nombre de colis *</label>
-                                    <input type="number" id="nombre_colis" name="nombre_colis" min="1" 
+                                    <input type="number" id="nombre_colis" name="nombre_colis" min="1"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="1">
                                 </div>
 
                                 <div>
                                     <label for="poids" class="block text-sm font-medium text-gray-700 mb-2">Poids total (kg) *</label>
-                                    <input type="number" id="poids" name="poids" step="0.1" min="0.1" 
+                                    <input type="number" id="poids" name="poids" step="0.1" min="0.1"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="5.5">
                                 </div>
 
                                 <div>
                                     <label for="type_produit" class="block text-sm font-medium text-gray-700 mb-2">Type de produit *</label>
-                                    <select id="type_produit" name="type_produit" 
+                                    <select id="type_produit" name="type_produit"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent">
                                         <option value="">Sélectionner...</option>
                                         <option value="alimentaire">Alimentaire</option>
@@ -171,7 +171,7 @@
 
                                 <div>
                                     <label for="type_cargaison" class="block text-sm font-medium text-gray-700 mb-2">Type de transport *</label>
-                                    <select id="type_cargaison" name="type_cargaison"  onchange="calculatePrice()"
+                                    <select id="type_cargaison" name="type_cargaison" onchange="calculatePrice()"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent">
                                         <option value="">Sélectionner...</option>
                                         <option value="maritime">Maritime</option>
@@ -180,12 +180,12 @@
                                     </select>
                                 </div>
 
-                                <div>
+                                <!-- <div>
                                     <label for="valeur_declaree" class="block text-sm font-medium text-gray-700 mb-2">Valeur déclarée (XAF)</label>
                                     <input type="number" id="valeur_declaree" name="valeur_declaree" step="0.01" min="0"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary focus:border-transparent"
                                         placeholder="100.00">
-                                </div> 
+                                </div> -->
 
                                 <div>
                                     <label for="prix_calcule" class="block text-sm font-medium text-gray-700 mb-2">Prix calculé (XAF)</label>
@@ -204,21 +204,14 @@
                         </div>
 
                         <!-- Cargaison Disponible -->
-<div class="bg-white rounded-lg shadow p-6">
+                        <div class="bg-white rounded-lg shadow p-6">
     <div class="flex items-center mb-6">
         <i class="fas fa-ship text-primary text-xl mr-3"></i>
         <h3 class="text-xl font-semibold text-gray-900">Cargaison Disponible</h3>
     </div>
 
     <div id="cargaisons-disponibles" class="space-y-3">
-        <!-- Les cargaisons seront chargées dynamiquement via JavaScript -->
-    </div>
-    
-    <div class="mt-4 text-center">
-        <a href="/dashboard" onclick="openNewCargoModal()" class="text-primary hover:text-blue-800 font-medium inline-flex items-center">
-            <i class="fas fa-plus mr-2"></i>
-            Créer une nouvelle cargaison si aucune ne correspond
-        </a>
+        <!-- Les cargaisons seront chargées ici dynamiquement -->
     </div>
 </div>
                         <!-- Boutons d'action -->
@@ -263,98 +256,7 @@
         </div>
     </div>
 
-    <script>
-        function calculatePrice() {
-            const poids = parseFloat(document.getElementById('poids').value) || 0;
-            const typeCargaison = document.getElementById('type_cargaison').value;
 
-            if (poids > 0 && typeCargaison) {
-                let tarifParKg = 0;
-
-                switch (typeCargaison) {
-                    case 'maritime':
-                        tarifParKg = 2.5;
-                        break;
-                    case 'aerien':
-                        tarifParKg = 8.0;
-                        break;
-                    case 'routier':
-                        tarifParKg = 4.0;
-                        break;
-                }
-
-                let prix = poids * tarifParKg;
-                // Prix minimum de 10€
-                if (prix < 10) {
-                    prix = 10;
-                }
-
-                document.getElementById('prix_calcule').value = prix.toFixed(2) + ' €';
-            }
-        }
-
-        function selectCargaison(element, code) {
-            // Désélectionner tous les autres
-            document.querySelectorAll('#cargaisons-disponibles .border-primary').forEach(el => {
-                el.classList.remove('border-primary', 'bg-blue-50');
-                el.classList.add('border-gray-200');
-            });
-
-            // Sélectionner l'élément cliqué
-            element.classList.remove('border-gray-200');
-            element.classList.add('border-primary', 'bg-blue-50');
-            element.querySelector('input[type="radio"]').checked = true;
-        }
-
-        function resetForm() {
-            document.getElementById('packageForm').reset();
-            document.getElementById('prix_calcule').value = '';
-
-            // Réinitialiser la sélection des cargaisons
-            document.querySelectorAll('#cargaisons-disponibles .border-primary').forEach(el => {
-                el.classList.remove('border-primary', 'bg-blue-50');
-                el.classList.add('border-gray-200');
-            });
-        }
-
-        function generateTrackingCode() {
-            const prefix = 'CG';
-            const random = Math.random().toString(36).substr(2, 6).toUpperCase();
-            return prefix + random;
-        }
-
-        function closeConfirmationModal() {
-            document.getElementById('confirmationModal').classList.add('hidden');
-            resetForm();
-        }
-
-        function printReceipt() {
-            // Simulation d'impression
-            alert('Reçu envoyé à l\'imprimante');
-        }
-
-        // Gestion du formulaire
-        document.getElementById('packageForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Validation
-            const cargaisonSelected = document.querySelector('input[name="cargaison"]:checked');
-            if (!cargaisonSelected) {
-                alert('Veuillez sélectionner une cargaison');
-                return;
-            }
-
-            // Générer le code de suivi
-            const trackingCode = generateTrackingCode();
-            document.getElementById('tracking-code-display').textContent = trackingCode;
-
-            // Afficher la modal de confirmation
-            document.getElementById('confirmationModal').classList.remove('hidden');
-        });
-
-        // Calculer le prix automatiquement quand le poids change
-        document.getElementById('poids').addEventListener('input', calculatePrice);
-    </script>
     <script type="module" src="../../dist/models/enregistrement.js"></script>
 
 </body>

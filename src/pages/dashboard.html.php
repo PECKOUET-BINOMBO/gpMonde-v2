@@ -54,11 +54,10 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Cargaisons Actives</p>
-                                <p class="text-2xl font-semibold text-gray-900">24</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="nb-cargaisons">0</p>
                             </div>
                         </div>
                     </div>
-
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-orange-100">
@@ -66,11 +65,10 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">En Attente</p>
-                                <p class="text-2xl font-semibold text-gray-900">8</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="nb-colis-attente">0</p>
                             </div>
                         </div>
                     </div>
-
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-green-100">
@@ -78,11 +76,10 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Livrés</p>
-                                <p class="text-2xl font-semibold text-gray-900">156</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="nb-colis-livres">0</p>
                             </div>
                         </div>
                     </div>
-
                     <div class="bg-white rounded-lg shadow p-6">
                         <div class="flex items-center">
                             <div class="p-3 rounded-full bg-red-100">
@@ -90,7 +87,7 @@
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600">Problèmes</p>
-                                <p class="text-2xl font-semibold text-gray-900">3</p>
+                                <p class="text-2xl font-semibold text-gray-900" id="nb-colis-problemes">0</p>
                             </div>
                         </div>
                     </div>
@@ -104,55 +101,7 @@
                                 <h3 class="text-lg font-medium text-gray-900">Cargaisons Récentes</h3>
                             </div>
                             <div class="p-6">
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-ship text-primary text-lg mr-3"></i>
-                                            <div>
-                                                <p class="font-medium text-gray-900">CG-MAR-001</p>
-                                                <p class="text-sm text-gray-600">Marseille → Alger</p>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                En cours
-                                            </span>
-                                            <p class="text-sm text-gray-500 mt-1">15 colis</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-plane text-secondary text-lg mr-3"></i>
-                                            <div>
-                                                <p class="font-medium text-gray-900">CG-AER-002</p>
-                                                <p class="text-sm text-gray-600">Paris → Dakar</p>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                Arrivé
-                                            </span>
-                                            <p class="text-sm text-gray-500 mt-1">8 colis</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-truck text-accent text-lg mr-3"></i>
-                                            <div>
-                                                <p class="font-medium text-gray-900">CG-ROU-003</p>
-                                                <p class="text-sm text-gray-600">Lyon → Genève</p>
-                                            </div>
-                                        </div>
-                                        <div class="text-right">
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                                En attente
-                                            </span>
-                                            <p class="text-sm text-gray-500 mt-1">22 colis</p>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="space-y-4" id="recent-cargaisons"></div>
 
                                 <div class="mt-6">
                                     <a href="/cargaisons" class="text-primary hover:text-blue-800 font-medium">
@@ -184,14 +133,7 @@
 
                         <div class="bg-white rounded-lg shadow p-6">
                             <h3 class="text-lg font-medium text-gray-900 mb-4">Alertes</h3>
-                            <div class="space-y-3">
-                                <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
-                                    <p class="text-sm text-red-800">3 colis en retard</p>
-                                </div>
-                                <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                    <p class="text-sm text-yellow-800">5 cargaisons à fermer</p>
-                                </div>
-                            </div>
+                            <div id="dashboard-alerts" class="space-y-3"></div>
                         </div>
                     </div>
                 </div>

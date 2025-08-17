@@ -61,6 +61,8 @@ if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         "latitude_arrivee" => $data['latitude_arrivee'] ?? null,
         "longitude_arrivee" => $data['longitude_arrivee'] ?? null,
         "poids_max" => $data['poids_max'],
+        "poids_actuel" => 0,           // Ajouté
+        "etat" => "ouvert",            // Ajouté
         "date_depart" => $data['date_depart'],
         "date_arrivee" => $data['date_arrivee'],
         "description" => $data['description'] ?? ""
@@ -87,7 +89,7 @@ if ($request === '/api/cargaisons' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     $cargaisons = $db['cargaisons'];
     
     // Filtrer par statut si demandé
-    if ($status === 'open') {
+    if ($status === 'ouvert') {
         $cargaisons = array_filter($cargaisons, function($c) {
             return $c['etat'] === 'ouvert';
         });
@@ -98,7 +100,6 @@ if ($request === '/api/cargaisons' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     exit;
 }
 
-// Ajoutez cette route dans index.php
 if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $dbPath = __DIR__ . '/db.json';
@@ -137,26 +138,76 @@ if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Créer le colis
+    // Créer le colis avec toutes les informations nécessaires
     $newId = 1;
     if (!empty($db['colis'])) {
         $ids = array_column($db['colis'], 'id');
         $newId = max($ids) + 1;
     }
 
+    // Générer la route basée sur la cargaison
+    $route = [
+        [
+            "lat" => $cargaison['latitude_depart'] ?? 0,
+            "lng" => $cargaison['longitude_depart'] ?? 0,
+            "name" => $cargaison['lieu_depart'] . " (Départ)",
+            "time" => date('d/m/Y H:i', strtotime($cargaison['date_depart']))
+        ],
+        [
+            "lat" => $cargaison['latitude_arrivee'] ?? 0,
+            "lng" => $cargaison['longitude_arrivee'] ?? 0,
+            "name" => $cargaison['lieu_arrive'] . " (Destination)",
+            "time" => date('d/m/Y H:i', strtotime($cargaison['date_arrivee']))
+        ]
+    ];
+
+    // Si c'est un transport longue distance, ajouter des points de transit
+    if ($cargaison['type_transport'] === 'maritime' || 
+        (isset($cargaison['distance']) && $cargaison['distance'] > 500)) {
+        
+        // Point de transit au milieu (exemple générique)
+        $lat_transit = ($route[0]['lat'] + $route[1]['lat']) / 2;
+        $lng_transit = ($route[0]['lng'] + $route[1]['lng']) / 2;
+        
+        $transit_point = [
+            "lat" => $lat_transit,
+            "lng" => $lng_transit,
+            "name" => "Point de Transit",
+            "time" => date('d/m/Y H:i', strtotime($cargaison['date_depart'] . ' +2 days'))
+        ];
+        
+        // Insérer le point de transit
+        array_splice($route, 1, 0, [$transit_point]);
+    }
+
     $newColis = [
         "id" => $newId,
         "numero_colis" => $data['numero_colis'],
-        "cargaison_id" => $data['cargaison_id'],
-        "nbr_colis" => $data['nbr_colis'],
-        "poids" => $data['poids'],
+        "cargaison_id" => (int)$data['cargaison_id'],
+        "nbr_colis" => (int)$data['nbr_colis'],
+        "poids" => (float)$data['poids'],
         "type_produit" => $data['type_produit'],
         "type_transport" => $data['type_transport'],
-        "prix" => $data['prix'],
-        "description" => $data['description'],
+        "prix" => (int)$data['prix'],
+        "description" => $data['description'] ?? '',
         "etat" => "En attente",
-        "info_expediteur" => $data['info_expediteur'],
-        "info_destinataire" => $data['info_destinataire'],
+        "lieu_actuel" => $cargaison['lieu_depart'], // Position actuelle = lieu de départ
+        "route" => $route,
+        "currentIndex" => 0, // Index de la position actuelle dans la route (départ)
+        "info_expediteur" => [
+            "nom" => $data['info_expediteur']['nom'],
+            "prenom" => $data['info_expediteur']['prenom'],
+            "adresse" => $data['info_expediteur']['adresse'],
+            "tel" => $data['info_expediteur']['tel'],
+            "email" => $data['info_expediteur']['email'] ?? ''
+        ],
+        "info_destinataire" => [
+            "nom" => $data['info_destinataire']['nom'],
+            "prenom" => $data['info_destinataire']['prenom'],
+            "adresse" => $data['info_destinataire']['adresse'],
+            "tel" => $data['info_destinataire']['tel'],
+            "email" => $data['info_destinataire']['email'] ?? ''
+        ],
         "created_at" => date('Y-m-d H:i:s')
     ];
 
@@ -167,7 +218,11 @@ if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
         header('Content-Type: application/json');
-        echo json_encode(["success" => true, "colis" => $newColis]);
+        echo json_encode([
+            "success" => true, 
+            "colis" => $newColis,
+            "message" => "Colis enregistré avec succès"
+        ]);
     } else {
         header('Content-Type: application/json');
         http_response_code(500);
@@ -176,41 +231,6 @@ if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'GET') {
-    $code = $_GET['code'] ?? '';
-    $dbPath = __DIR__ . '/db.json';
-    
-    try {
-        $db = json_decode(file_get_contents($dbPath), true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('Erreur de lecture du fichier JSON');
-        }
-
-        $found = null;
-        foreach ($db['colis'] as $colis) {
-            if (strtoupper($colis['numero_colis']) === strtoupper($code)) {
-                $found = $colis;
-                break;
-            }
-        }
-
-        header('Content-Type: application/json');
-        if ($found) {
-            // Assurez-vous que toutes les clés nécessaires sont présentes
-            if (!isset($found['currentIndex'])) {
-                $found['currentIndex'] = 0; // Valeur par défaut
-            }
-            echo json_encode($found);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Colis non trouvé']);
-        }
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Erreur serveur: ' . $e->getMessage()]);
-    }
-    exit;
-}
 
 // Ensuite, routes classiques
 if (array_key_exists($request, $routes)) {
