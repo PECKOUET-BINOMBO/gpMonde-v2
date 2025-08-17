@@ -231,6 +231,41 @@ if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
+if ($request === '/api/colis/update-status' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+
+    if (empty($data['numero_colis']) || empty($data['etat'])) {
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Paramètres manquants"]);
+        exit;
+    }
+
+    $found = false;
+    foreach ($db['colis'] as &$colis) {
+        if ($colis['numero_colis'] === $data['numero_colis']) {
+            $colis['etat'] = $data['etat'];
+            $found = true;
+            break;
+        }
+    }
+
+    if (!$found) {
+        http_response_code(404);
+        echo json_encode(["success" => false, "message" => "Colis non trouvé"]);
+        exit;
+    }
+
+    if (file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        echo json_encode(["success" => true]);
+    } else {
+        http_response_code(500);
+        echo json_encode(["success" => false, "message" => "Erreur lors de la sauvegarde"]);
+    }
+    exit;
+}
+
 
 // Ensuite, routes classiques
 if (array_key_exists($request, $routes)) {

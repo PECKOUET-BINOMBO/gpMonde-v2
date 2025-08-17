@@ -326,7 +326,7 @@
                                 <select id="new-status" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                                     <option value="">Sélectionner un nouvel état...</option>
                                     <option value="en_attente">En attente</option>
-                                    <option value="en_cours">En cours</option>
+                                    <option value="en_cours">En cours de transport</option>
                                     <option value="arrive">Arrivé</option>
                                     <option value="recupere">Récupéré</option>
                                     <option value="perdu">Perdu</option>
@@ -351,102 +351,26 @@
         </div>
     </div>
 
-    <script>
-        let currentPackageCode = null;
-        
-        function searchPackages() {
-            const code = document.getElementById('search-code').value;
-            const cargo = document.getElementById('search-cargo').value;
-            const client = document.getElementById('search-client').value;
-            
-            // Simulation de recherche
-            console.log('Recherche:', { code, cargo, client });
-            // Ici, on ferait un appel API pour récupérer les résultats
-        }
-        
-        function clearSearch() {
-            document.getElementById('search-code').value = '';
-            document.getElementById('search-cargo').value = '';
-            document.getElementById('search-client').value = '';
-        }
-        
-        function viewPackageDetails(packageCode) {
-            currentPackageCode = packageCode;
-            // Ici, on chargerait les vraies données du colis
-            document.getElementById('packageDetailsModal').classList.remove('hidden');
-        }
-        
-        function closePackageDetailsModal() {
-            document.getElementById('packageDetailsModal').classList.add('hidden');
-            currentPackageCode = null;
-        }
-        
-        function changePackageStatus(packageCode, status) {
-            const statusNames = {
-                'recupere': 'récupéré',
-                'perdu': 'perdu',
-                'archive': 'archivé'
-            };
-            
-            if (confirm(`Êtes-vous sûr de vouloir marquer ce colis comme ${statusNames[status]}?`)) {
-                alert(`Colis ${packageCode} marqué comme ${statusNames[status]}`);
-                // Ici, on ferait un appel API pour mettre à jour le statut
-            }
-        }
-        
-        function archivePackage(packageCode) {
-            changePackageStatus(packageCode, 'archive');
-        }
-        
-        function updatePackageStatus() {
-            const newStatus = document.getElementById('new-status').value;
-            if (newStatus && currentPackageCode) {
-                alert(`État du colis ${currentPackageCode} mis à jour: ${newStatus}`);
-                closePackageDetailsModal();
-            } else {
-                alert('Veuillez sélectionner un nouvel état');
-            }
-        }
-        
-        function markAsRetrieved() {
-            if (currentPackageCode) {
-                alert(`Colis ${currentPackageCode} marqué comme récupéré`);
-                closePackageDetailsModal();
-            }
-        }
-        
-        function markAsLost() {
-            if (currentPackageCode) {
-                if (confirm('Êtes-vous sûr de vouloir marquer ce colis comme perdu?')) {
-                    alert(`Colis ${currentPackageCode} marqué comme perdu`);
-                    closePackageDetailsModal();
-                }
-            }
-        }
-        
-        function archivePackageFromModal() {
-            if (currentPackageCode) {
-                if (confirm('Êtes-vous sûr de vouloir archiver ce colis?')) {
-                    alert(`Colis ${currentPackageCode} archivé`);
-                    closePackageDetailsModal();
-                }
-            }
-        }
-        
-        // Fermer la modal en cliquant à l'extérieur
-        document.getElementById('packageDetailsModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePackageDetailsModal();
-            }
-        });
-        
-        // Recherche en temps réel
-        document.getElementById('search-code').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchPackages();
-            }
-        });
-    </script>
+   <!-- Modal de confirmation d'action -->
+<div id="actionConfirmModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full text-center">
+        <div class="mb-4">
+            <i class="fas fa-question-circle text-primary text-4xl"></i>
+        </div>
+        <p id="actionConfirmMessage" class="text-lg text-gray-800 mb-6"></p>
+        <div class="flex justify-center gap-4">
+            <button id="actionConfirmYes" class="bg-primary hover:bg-blue-800 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                Confirmer
+            </button>
+            <button id="actionConfirmNo" class="bg-gray-300 hover:bg-gray-400 text-gray-700 px-6 py-2 rounded-lg font-medium transition-colors">
+                Annuler
+            </button>
+        </div>
+    </div>
+</div>
+<!-- Message de succès -->
+<div id="successToast" class="hidden fixed top-6 right-6 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-opacity"></div>
+    
     <script type="module" src="../../dist/models/recherche.js"></script>
     
 

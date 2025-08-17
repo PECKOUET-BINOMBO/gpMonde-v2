@@ -61,7 +61,7 @@
             "prix": 250000,
             "description": "Colis alimentaire fragile",
             "cargaison_id": 1,
-            "etat": "En cours de transport",
+            "etat": "Perdu",
             "info_expediteur": {
                 "nom": "Jean",
                 "prenom": "Dupont",
@@ -87,7 +87,7 @@
             "type_transport": "maritime",
             "prix": 750000,
             "description": "",
-            "etat": "En attente",
+            "etat": "Récupéré",
             "lieu_actuel": "Libreville, Estuaire, Gabon",
             "route": [
                 {
