@@ -717,6 +717,8 @@
     </script>
     <script type="module" src="../../dist/services/setupLogout.js"></script>
     <script type="module" src="../../dist/services/createCargo.js"></script>
+    <script type="module" src="../../dist/models/dashboard.js"></script>
+
     <style>
         .custom-marker {
             background: transparent !important;

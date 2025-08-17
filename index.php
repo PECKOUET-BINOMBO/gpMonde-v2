@@ -25,11 +25,10 @@ $routes = [
     
 ];
 
-$request = $_SERVER['REQUEST_URI'];
+$request = strtok($_SERVER['REQUEST_URI'], '?');
 
 
 
-// Gestion de l'API d'abord !
 if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $dbPath = __DIR__ . '/db.json';
@@ -76,6 +75,139 @@ if ($request === '/api/cargaison' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode(["success" => false, "message" => "Erreur lors de l'écriture dans la base de données"]);
+    }
+    exit;
+}
+
+if ($request === '/api/cargaisons' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+    
+    $status = $_GET['status'] ?? null;
+    $cargaisons = $db['cargaisons'];
+    
+    // Filtrer par statut si demandé
+    if ($status === 'open') {
+        $cargaisons = array_filter($cargaisons, function($c) {
+            return $c['etat'] === 'ouvert';
+        });
+    }
+    
+    header('Content-Type: application/json');
+    echo json_encode(array_values($cargaisons));
+    exit;
+}
+
+// Ajoutez cette route dans index.php
+if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+
+    // Validation
+    if (empty($data['cargaison_id']) || empty($data['poids'])) {
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Données manquantes"]);
+        exit;
+    }
+
+    // Vérifier que la cargaison existe et est ouverte
+    $cargaison = null;
+    foreach ($db['cargaisons'] as &$c) {
+        if ($c['id'] == $data['cargaison_id']) {
+            $cargaison = &$c;
+            break;
+        }
+    }
+
+    if (!$cargaison || $cargaison['etat'] !== 'ouvert') {
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Cargaison non disponible"]);
+        exit;
+    }
+
+    // Vérifier la capacité
+    $poids_actuel = $cargaison['poids_actuel'] ?? 0;
+    if (($poids_actuel + $data['poids']) > $cargaison['poids_max']) {
+        header('Content-Type: application/json');
+        http_response_code(400);
+        echo json_encode(["success" => false, "message" => "Capacité maximale dépassée"]);
+        exit;
+    }
+
+    // Créer le colis
+    $newId = 1;
+    if (!empty($db['colis'])) {
+        $ids = array_column($db['colis'], 'id');
+        $newId = max($ids) + 1;
+    }
+
+    $newColis = [
+        "id" => $newId,
+        "numero_colis" => $data['numero_colis'],
+        "cargaison_id" => $data['cargaison_id'],
+        "nbr_colis" => $data['nbr_colis'],
+        "poids" => $data['poids'],
+        "type_produit" => $data['type_produit'],
+        "type_transport" => $data['type_transport'],
+        "prix" => $data['prix'],
+        "description" => $data['description'],
+        "etat" => "En attente",
+        "info_expediteur" => $data['info_expediteur'],
+        "info_destinataire" => $data['info_destinataire'],
+        "created_at" => date('Y-m-d H:i:s')
+    ];
+
+    $db['colis'][] = $newColis;
+    
+    // Mettre à jour le poids actuel de la cargaison
+    $cargaison['poids_actuel'] = $poids_actuel + $data['poids'];
+
+    if (file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        header('Content-Type: application/json');
+        echo json_encode(["success" => true, "colis" => $newColis]);
+    } else {
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(["success" => false, "message" => "Erreur lors de l'écriture dans la base de données"]);
+    }
+    exit;
+}
+
+if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'GET') {
+    $code = $_GET['code'] ?? '';
+    $dbPath = __DIR__ . '/db.json';
+    
+    try {
+        $db = json_decode(file_get_contents($dbPath), true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception('Erreur de lecture du fichier JSON');
+        }
+
+        $found = null;
+        foreach ($db['colis'] as $colis) {
+            if (strtoupper($colis['numero_colis']) === strtoupper($code)) {
+                $found = $colis;
+                break;
+            }
+        }
+
+        header('Content-Type: application/json');
+        if ($found) {
+            // Assurez-vous que toutes les clés nécessaires sont présentes
+            if (!isset($found['currentIndex'])) {
+                $found['currentIndex'] = 0; // Valeur par défaut
+            }
+            echo json_encode($found);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Colis non trouvé']);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(['error' => 'Erreur serveur: ' . $e->getMessage()]);
     }
     exit;
 }

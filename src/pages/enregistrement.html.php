@@ -204,41 +204,23 @@
                         </div>
 
                         <!-- Cargaison Disponible -->
-                        <div class="bg-white rounded-lg shadow p-6">
-                            <div class="flex items-center mb-6">
-                                <i class="fas fa-ship text-primary text-xl mr-3"></i>
-                                <h3 class="text-xl font-semibold text-gray-900">Cargaison Disponible</h3>
-                            </div>
+<div class="bg-white rounded-lg shadow p-6">
+    <div class="flex items-center mb-6">
+        <i class="fas fa-ship text-primary text-xl mr-3"></i>
+        <h3 class="text-xl font-semibold text-gray-900">Cargaison Disponible</h3>
+    </div>
 
-                            <div id="cargaisons-disponibles" class="space-y-3">
-                                <div class="p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer transition-colors" onclick="selectCargaison(this, 'CG-MAR-001')">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <input type="radio" name="cargaison" value="CG-MAR-001" class="mr-3">
-                                            <div>
-                                                <p class="font-medium text-gray-900">CG-MAR-001 - Maritime</p>
-                                                <p class="text-sm text-gray-600">Marseille → Alger | Capacité restante: 150kg</p>
-                                            </div>
-                                        </div>
-                                        <span class="text-sm text-green-600 font-medium">Ouvert</span>
-                                    </div>
-                                </div>
-
-                                <div class="p-4 border border-gray-200 rounded-lg hover:border-primary cursor-pointer transition-colors" onclick="selectCargaison(this, 'CG-AER-002')">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center">
-                                            <input type="radio" name="cargaison" value="CG-AER-002" class="mr-3">
-                                            <div>
-                                                <p class="font-medium text-gray-900">CG-AER-002 - Aérien</p>
-                                                <p class="text-sm text-gray-600">Paris → Dakar | Capacité restante: 75kg</p>
-                                            </div>
-                                        </div>
-                                        <span class="text-sm text-green-600 font-medium">Ouvert</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
+    <div id="cargaisons-disponibles" class="space-y-3">
+        <!-- Les cargaisons seront chargées dynamiquement via JavaScript -->
+    </div>
+    
+    <div class="mt-4 text-center">
+        <a href="/dashboard" onclick="openNewCargoModal()" class="text-primary hover:text-blue-800 font-medium inline-flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Créer une nouvelle cargaison si aucune ne correspond
+        </a>
+    </div>
+</div>
                         <!-- Boutons d'action -->
                         <div class="flex flex-col sm:flex-row gap-4 justify-end">
                             <button type="button" onclick="resetForm()"
@@ -373,6 +355,8 @@
         // Calculer le prix automatiquement quand le poids change
         document.getElementById('poids').addEventListener('input', calculatePrice);
     </script>
+    <script type="module" src="../../dist/models/enregistrement.js"></script>
+
 </body>
 
 </html>

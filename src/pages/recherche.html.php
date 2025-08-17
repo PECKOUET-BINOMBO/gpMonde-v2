@@ -463,6 +463,9 @@
             }
         });
     </script>
+    <script type="module" src="../../dist/models/recherche.js"></script>
+    
+
 </body>
 </html>
 

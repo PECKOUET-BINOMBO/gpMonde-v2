@@ -44,6 +44,13 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" 
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" 
             crossorigin=""></script>
+            <script type="importmap">
+{
+  "imports": {
+    "leaflet": "https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js"
+  }
+}
+</script>
 </head>
 <body class="h-full bg-gray-50">
     <!-- Header -->
@@ -137,29 +144,7 @@
                                 <span class="text-sm text-gray-600">Valeur:</span>
                                 <span class="text-sm font-medium" id="value">250 000 FCFA</span>
                             </div>
-                        </div>
-
-                        <!-- Statut actuel -->
-                        <div class="p-4 bg-blue-50 rounded-lg mb-6">
-                            <div class="flex items-center">
-                                <div class="w-3 h-3 bg-primary rounded-full mr-3 animate-pulse-slow"></div>
-                                <div>
-                                    <p class="font-medium text-primary" id="currentStatus">En cours de transport</p>
-                                    <p class="text-xs text-gray-600" id="currentLocation">Port de Dakar</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Progression -->
-                        <div class="mb-6">
-                            <div class="flex justify-between text-sm text-gray-600 mb-2">
-                                <span>Progression</span>
-                                <span id="progressPercent">65%</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                <div class="bg-primary h-2 rounded-full transition-all duration-500" id="progressBar" style="width: 65%"></div>
-                            </div>
-                        </div>
+                        </div>                       
 
                         <!-- Actions -->
                         <div class="space-y-3">
@@ -168,21 +153,11 @@
                                 <i class="fas fa-crosshairs mr-2"></i>
                                 Centrer sur le colis
                             </button>
-                            <button onclick="toggleAnimation()" 
-                                    class="w-full px-4 py-2 bg-accent hover:bg-green-600 text-white rounded-lg transition-colors">
-                                <i class="fas fa-play mr-2" id="animationIcon"></i>
-                                <span id="animationText">Voir l'animation</span>
-                            </button>
+                            
                         </div>
                     </div>
 
-                    <!-- Historique -->
-                    <div class="bg-white rounded-xl shadow-sm p-6">
-                        <h4 class="font-semibold text-gray-900 mb-4">Historique du transport</h4>
-                        <div class="space-y-4" id="trackingHistory">
-                            <!-- L'historique sera généré dynamiquement -->
-                        </div>
-                    </div>
+                    
                 </div>
 
                 <!-- Carte -->
@@ -191,11 +166,7 @@
                         <div class="flex items-center justify-between mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">Localisation en temps réel</h3>
                             <div class="flex items-center space-x-2">
-                                <button onclick="toggleMapView()" 
-                                        class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
-                                    <i class="fas fa-layer-group mr-1"></i>
-                                    <span id="mapViewText">Satellite</span>
-                                </button>
+                                
                                 <button onclick="toggleFullscreen()" 
                                         class="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
                                     <i class="fas fa-expand mr-1"></i>
@@ -286,328 +257,7 @@
     <!-- Footer -->
    <?php include __DIR__ . '/../partials/footer.html.php'; ?>
 
-    <script>
-        // Variables globales
-        let map;
-        let currentMarker;
-        let routeLine;
-        let animationMarker;
-        let isAnimating = false;
-        let currentMapView = 'street';
-        
-        // Données de démonstration
-        const packageData = {
-            'CG123456': {
-                title: 'Colis #CG123456',
-                type: 'Transport Maritime',
-                sender: 'Jean Dupont',
-                recipient: 'Marie Martin',
-                weight: '15.5 kg',
-                value: '250 €',
-                status: 'En cours de transport',
-                location: 'Port de Marseille',
-                progress: 65,
-                route: [
-                    { lat: 43.2965, lng: 5.3698, name: 'Port de Marseille (Départ)', time: '12/01/2025 08:00' },
-                    { lat: 43.7102, lng: 7.2620, name: 'Nice', time: '13/01/2025 14:30' },
-                    { lat: 43.6047, lng: 1.4442, name: 'Toulouse', time: '14/01/2025 10:15' },
-                    { lat: 44.8378, lng: -0.5792, name: 'Bordeaux (Position actuelle)', time: '15/01/2025 16:45' },
-                    { lat: 47.2184, lng: -1.5536, name: 'Nantes', time: '16/01/2025 12:00' },
-                    { lat: 48.8566, lng: 2.3522, name: 'Paris (Destination)', time: '17/01/2025 18:00' }
-                ],
-                currentIndex: 3
-            }
-        };
-
-        // Initialisation de la carte
-        function initMap() {
-            map = L.map('map').setView([46.603354, 1.888334], 6);
-            
-            // Couche de base OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-        }
-
-        // Gestion du formulaire de recherche
-        document.getElementById('trackingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const code = document.getElementById('trackingCode').value.trim().toUpperCase();
-            searchPackage(code);
-        });
-
-        // Recherche d'un colis
-        function searchPackage(code) {
-            document.getElementById('trackingCode').value = code;
-            
-            if (packageData[code]) {
-                displayPackageInfo(packageData[code]);
-                displayRoute(packageData[code]);
-                document.getElementById('trackingResults').classList.remove('hidden');
-                document.getElementById('errorMessage').classList.add('hidden');
-            } else {
-                document.getElementById('trackingResults').classList.add('hidden');
-                document.getElementById('errorMessage').classList.remove('hidden');
-            }
-        }
-
-        // Affichage des informations du colis
-        function displayPackageInfo(data) {
-            document.getElementById('packageTitle').textContent = data.title;
-            document.getElementById('packageType').textContent = data.type;
-            document.getElementById('sender').textContent = data.sender;
-            document.getElementById('recipient').textContent = data.recipient;
-            document.getElementById('weight').textContent = data.weight;
-            document.getElementById('value').textContent = data.value;
-            document.getElementById('currentStatus').textContent = data.status;
-            document.getElementById('currentLocation').textContent = data.location;
-            document.getElementById('progressPercent').textContent = data.progress + '%';
-            document.getElementById('progressBar').style.width = data.progress + '%';
-            
-            // Historique
-            const historyContainer = document.getElementById('trackingHistory');
-            historyContainer.innerHTML = '';
-            
-            data.route.forEach((point, index) => {
-                const isCompleted = index <= data.currentIndex;
-                const isCurrent = index === data.currentIndex;
-                
-                const historyItem = document.createElement('div');
-                historyItem.className = 'flex items-center';
-                historyItem.innerHTML = `
-                    <div class="w-3 h-3 ${isCompleted ? (isCurrent ? 'bg-primary animate-pulse' : 'bg-accent') : 'bg-gray-300'} rounded-full mr-3"></div>
-                    <div class="flex-1">
-                        <span class="text-sm ${isCompleted ? 'text-gray-900' : 'text-gray-500'}">${point.name}</span>
-                        <div class="text-xs text-gray-500">${point.time}</div>
-                    </div>
-                `;
-                historyContainer.appendChild(historyItem);
-            });
-        }
-
-        // Affichage de la route sur la carte
-        function displayRoute(data) {
-            // Nettoyer la carte
-            if (currentMarker) map.removeLayer(currentMarker);
-            if (routeLine) map.removeLayer(routeLine);
-            if (animationMarker) map.removeLayer(animationMarker);
-            
-            const route = data.route;
-            const currentIndex = data.currentIndex;
-            
-            // Trajet parcouru (ligne bleue)
-            const completedRoute = route.slice(0, currentIndex + 1);
-            if (completedRoute.length > 1) {
-                routeLine = L.polyline(completedRoute.map(p => [p.lat, p.lng]), {
-                    color: '#3b82f6',
-                    weight: 4,
-                    opacity: 0.8
-                }).addTo(map);
-            }
-            
-            // Trajet restant (ligne pointillée)
-            const remainingRoute = route.slice(currentIndex);
-            if (remainingRoute.length > 1) {
-                L.polyline(remainingRoute.map(p => [p.lat, p.lng]), {
-                    color: '#9ca3af',
-                    weight: 3,
-                    opacity: 0.6,
-                    dashArray: '10, 10'
-                }).addTo(map);
-            }
-            
-            // Marqueurs
-            route.forEach((point, index) => {
-                let color, icon;
-                if (index === 0) {
-                    color = 'green';
-                    icon = 'play';
-                } else if (index === route.length - 1) {
-                    color = 'red';
-                    icon = 'flag';
-                } else if (index === currentIndex) {
-                    color = 'blue';
-                    icon = 'shipping-fast';
-                } else if (index < currentIndex) {
-                    color = 'green';
-                    icon = 'check';
-                } else {
-                    color = 'gray';
-                    icon = 'circle';
-                }
-                
-                const marker = L.marker([point.lat, point.lng], {
-                    icon: L.divIcon({
-                        className: 'custom-marker',
-                        html: `<div class="w-8 h-8 bg-${color}-500 rounded-full flex items-center justify-center text-white shadow-lg">
-                                 <i class="fas fa-${icon} text-xs"></i>
-                               </div>`,
-                        iconSize: [32, 32],
-                        iconAnchor: [16, 16]
-                    })
-                }).addTo(map);
-                
-                marker.bindPopup(`
-                    <div class="text-center">
-                        <strong>${point.name}</strong><br>
-                        <small>${point.time}</small>
-                    </div>
-                `);
-                
-                if (index === currentIndex) {
-                    currentMarker = marker;
-                }
-            });
-            
-            // Centrer la carte sur la route
-            const bounds = L.latLngBounds(route.map(p => [p.lat, p.lng]));
-            map.fitBounds(bounds, { padding: [20, 20] });
-        }
-
-        // Centrer la carte sur le colis
-        function centerMapOnPackage() {
-            if (currentMarker) {
-                map.setView(currentMarker.getLatLng(), 10);
-                currentMarker.openPopup();
-            }
-        }
-
-        // Animation du trajet
-        function toggleAnimation() {
-            const code = document.getElementById('trackingCode').value.trim().toUpperCase();
-            const data = packageData[code];
-            
-            if (!data) return;
-            
-            if (isAnimating) {
-                stopAnimation();
-            } else {
-                startAnimation(data);
-            }
-        }
-
-        function startAnimation(data) {
-            isAnimating = true;
-            document.getElementById('animationIcon').className = 'fas fa-pause mr-2';
-            document.getElementById('animationText').textContent = 'Arrêter l\'animation';
-            
-            const route = data.route;
-            let currentStep = 0;
-            
-            // Créer un marqueur d'animation
-            animationMarker = L.marker([route[0].lat, route[0].lng], {
-                icon: L.divIcon({
-                    className: 'animation-marker',
-                    html: `<div class="w-6 h-6 bg-yellow-500 rounded-full flex items-center justify-center text-white shadow-lg animate-bounce">
-                             <i class="fas fa-truck text-xs"></i>
-                           </div>`,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                })
-            }).addTo(map);
-            
-            function animateStep() {
-                if (!isAnimating || currentStep >= route.length - 1) {
-                    stopAnimation();
-                    return;
-                }
-                
-                const start = route[currentStep];
-                const end = route[currentStep + 1];
-                const duration = 2000; // 2 secondes par segment
-                const steps = 50;
-                let step = 0;
-                
-                const interval = setInterval(() => {
-                    if (!isAnimating) {
-                        clearInterval(interval);
-                        return;
-                    }
-                    
-                    const progress = step / steps;
-                    const lat = start.lat + (end.lat - start.lat) * progress;
-                    const lng = start.lng + (end.lng - start.lng) * progress;
-                    
-                    animationMarker.setLatLng([lat, lng]);
-                    
-                    step++;
-                    if (step > steps) {
-                        clearInterval(interval);
-                        currentStep++;
-                        setTimeout(animateStep, 500); // Pause entre les segments
-                    }
-                }, duration / steps);
-            }
-            
-            animateStep();
-        }
-
-        function stopAnimation() {
-            isAnimating = false;
-            document.getElementById('animationIcon').className = 'fas fa-play mr-2';
-            document.getElementById('animationText').textContent = 'Voir l\'animation';
-            
-            if (animationMarker) {
-                map.removeLayer(animationMarker);
-                animationMarker = null;
-            }
-        }
-
-        // Changer la vue de la carte
-        function toggleMapView() {
-            // Cette fonction pourrait basculer entre différentes couches de carte
-            // Pour la démonstration, on change juste le texte
-            const viewText = document.getElementById('mapViewText');
-            if (currentMapView === 'street') {
-                viewText.textContent = 'Plan';
-                currentMapView = 'satellite';
-            } else {
-                viewText.textContent = 'Satellite';
-                currentMapView = 'street';
-            }
-        }
-
-        // Mode plein écran
-        function toggleFullscreen() {
-            const mapContainer = document.getElementById('map');
-            if (!document.fullscreenElement) {
-                mapContainer.requestFullscreen().then(() => {
-                    mapContainer.style.height = '100vh';
-                    setTimeout(() => map.invalidateSize(), 100);
-                });
-            } else {
-                document.exitFullscreen().then(() => {
-                    mapContainer.style.height = '';
-                    setTimeout(() => map.invalidateSize(), 100);
-                });
-            }
-        }
-
-        // Réinitialiser la recherche
-        function resetSearch() {
-            document.getElementById('trackingCode').value = '';
-            document.getElementById('trackingResults').classList.add('hidden');
-            document.getElementById('errorMessage').classList.add('hidden');
-            
-            // Nettoyer la carte
-            if (currentMarker) map.removeLayer(currentMarker);
-            if (routeLine) map.removeLayer(routeLine);
-            if (animationMarker) map.removeLayer(animationMarker);
-            
-            stopAnimation();
-        }
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', function() {
-            initMap();
-            
-            // Animation d'entrée
-            const elements = document.querySelectorAll('.animate-slide-up');
-            elements.forEach((el, index) => {
-                el.style.animationDelay = (index * 0.1) + 's';
-            });
-        });
-    </script>
+    <script type="module" src="../../dist/models/accueil.js"></script>
 
      <style>
         .custom-marker {

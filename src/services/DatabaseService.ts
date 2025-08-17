@@ -185,4 +185,38 @@ export class DatabaseService {
   public resetDatabase(): void {
     this.database = null;
   }
+
+  public getDatabase(): Database {
+    if (!this.database) {
+        throw new Error('Database not loaded');
+    }
+    return this.database;
+}
+
+public async getCargaisons(status?: string): Promise<any[]> {
+    if (!this.database) {
+        await this.loadDatabase();
+    }
+    
+    let cargasons = this.database!.cargaisons;
+    if (status) {
+        cargasons = cargasons.filter(c => c.etat === status);
+    }
+    return cargasons;
+}
+
+public async getColis(filters?: any): Promise<any[]> {
+    if (!this.database) {
+        await this.loadDatabase();
+    }
+    
+    let colis = this.database!.colis;
+    if (filters) {
+        if (filters.code) {
+            colis = colis.filter(p => p.numero_colis.includes(filters.code));
+        }
+        // Ajouter d'autres filtres si nécessaire
+    }
+    return colis;
+}
 }

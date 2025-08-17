@@ -375,6 +375,8 @@
             }
         });
     </script>
+    <script type="module" src="../../dist/pages/cargaisons.js"></script>
+
 </body>
 </html>
 
