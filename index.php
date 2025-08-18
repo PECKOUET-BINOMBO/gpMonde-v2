@@ -266,6 +266,42 @@ if ($request === '/api/colis/update-status' && $_SERVER['REQUEST_METHOD'] === 'P
     exit;
 }
 
+// Ouvrir une cargaison
+if ($request === '/api/cargaison/open' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $id = $data['id'] ?? null;
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+
+    foreach ($db['cargaisons'] as &$cargaison) {
+        if ($cargaison['id'] == $id) {
+            $cargaison['etat'] = 'ouvert';
+            break;
+        }
+    }
+    file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+// Fermer une cargaison
+if ($request === '/api/cargaison/close' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $id = $data['id'] ?? null;
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+
+    foreach ($db['cargaisons'] as &$cargaison) {
+        if ($cargaison['id'] == $id) {
+            $cargaison['etat'] = 'fermé';
+            break;
+        }
+    }
+    file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    echo json_encode(['success' => true]);
+    exit;
+}
+
 
 // Ensuite, routes classiques
 if (array_key_exists($request, $routes)) {

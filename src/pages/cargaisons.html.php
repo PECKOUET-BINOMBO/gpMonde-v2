@@ -139,7 +139,7 @@
         </div>
     </div>
 
-    <!-- Modal Nouvelle Cargaison -->
+    <!-- Modal Nouvelle Cargaison 
     <div id="newCargoModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
         <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
             <div class="mt-3">
@@ -204,9 +204,19 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div>-->
 
-        
+        <!-- Modal de confirmation -->
+<div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+    <div id="confirmModalIcon" class="mb-4 text-4xl text-primary"></div>
+    <div id="confirmModalMessage" class="mb-4 text-gray-800 text-lg"></div>
+    <div class="flex justify-center gap-4">
+      <button id="confirmModalCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Annuler</button>
+      <button id="confirmModalOk" class="px-4 py-2 bg-primary text-white rounded hover:bg-blue-800">Confirmer</button>
+    </div>
+  </div>
+</div>
     <script type="module" src="../../dist/models/cargaisons.js"></script>
 
 </body>

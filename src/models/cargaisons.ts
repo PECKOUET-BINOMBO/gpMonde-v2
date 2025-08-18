@@ -26,6 +26,52 @@ let allColis: Colis[] = [];
 let currentPage = 1;
 const itemsPerPage = 5;
 
+
+function showModal(message: string, iconHtml: string = '<i class="fas fa-info-circle"></i>') {
+    const modal = document.getElementById('actionModal') as HTMLDivElement;
+    const msg = document.getElementById('actionModalMessage') as HTMLDivElement;
+    const icon = document.getElementById('actionModalIcon') as HTMLDivElement;
+    const closeBtn = document.getElementById('actionModalClose') as HTMLButtonElement;
+    if (!modal || !msg || !icon || !closeBtn) return;
+
+    msg.innerHTML = message;
+    icon.innerHTML = iconHtml;
+    modal.classList.remove('hidden');
+
+    closeBtn.onclick = () => {
+        modal.classList.add('hidden');
+    };
+}
+
+function showConfirmModal(
+    message: string,
+    iconHtml: string,
+    onConfirm: () => void
+) {
+    const modal = document.getElementById('confirmModal') as HTMLDivElement;
+    const msg = document.getElementById('confirmModalMessage') as HTMLDivElement;
+    const icon = document.getElementById('confirmModalIcon') as HTMLDivElement;
+    const btnOk = document.getElementById('confirmModalOk') as HTMLButtonElement;
+    const btnCancel = document.getElementById('confirmModalCancel') as HTMLButtonElement;
+    if (!modal || !msg || !icon || !btnOk || !btnCancel) return;
+
+    msg.innerHTML = message;
+    icon.innerHTML = iconHtml;
+    modal.classList.remove('hidden');
+
+    // Nettoyer les anciens listeners
+    btnOk.onclick = null;
+    btnCancel.onclick = null;
+
+    btnOk.onclick = () => {
+        modal.classList.add('hidden');
+        onConfirm();
+    };
+    btnCancel.onclick = () => {
+        modal.classList.add('hidden');
+    };
+}
+
 function getTypeIcon(type: string) {
     switch (type.toLowerCase()) {
         case 'maritime': return `<i class="fas fa-ship text-primary mr-2"></i>`;
@@ -110,9 +156,14 @@ function renderCargaisons(cargaisons: Cargaison[]) {
                         <button onclick="editCargaison('${c.numero_cargaison}')" class="text-secondary hover:text-orange-600">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button onclick="closeCargaison('${c.numero_cargaison}')" class="text-red-600 hover:text-red-800">
-                            <i class="fas fa-lock"></i>
-                        </button>
+                        ${c.etat.toLowerCase() === 'ouvert'
+                            ? `<button onclick="closeCargaison('${c.numero_cargaison}')" class="text-red-600 hover:text-red-800" title="Fermer">
+                                <i class="fas fa-lock"></i>
+                               </button>`
+                            : `<button onclick="reopenCargaison('${c.numero_cargaison}')" class="text-green-600 hover:text-green-800" title="Ouvrir">
+                                <i class="fas fa-unlock"></i>
+                               </button>`
+                        }
                     </div>
                 </td>
             </tr>
@@ -249,8 +300,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// Ouvrir une cargaison
+function reopenCargaison(numero: string): void {
+    const cargaison = allCargaisons.find(c => c.numero_cargaison === numero);
+    if (!cargaison) {
+        showModal("Cargaison introuvable", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+        return;
+    }
+    showConfirmModal(
+        "Voulez-vous vraiment ouvrir cette cargaison ?",
+        '<i class="fas fa-unlock text-green-600"></i>',
+        () => {
+            fetch('/api/cargaison/open', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: cargaison.id })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    showModal("Cargaison ouverte avec succès !", '<i class="fas fa-unlock text-green-600"></i>');
+                    loadCargaisons().then(() => renderCargaisons(getFilteredCargaisons()));
+                } else {
+                    showModal("Erreur lors de l'ouverture", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+                }
+            });
+        }
+    );
+}
+
+// Fermer une cargaison
+function closeCargaison(numero: string): void {
+    const cargaison = allCargaisons.find(c => c.numero_cargaison === numero);
+    if (!cargaison) {
+        showModal("Cargaison introuvable", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+        return;
+    }
+    showConfirmModal(
+        "Voulez-vous vraiment fermer cette cargaison ?",
+        '<i class="fas fa-lock text-red-600"></i>',
+        () => {
+            fetch('/api/cargaison/close', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: cargaison.id })
+            })
+            .then(res => res.json())
+            .then(result => {
+                if (result.success) {
+                    showModal("Cargaison fermée avec succès !", '<i class="fas fa-lock text-red-600"></i>');
+                    loadCargaisons().then(() => renderCargaisons(getFilteredCargaisons()));
+                } else {
+                    showModal("Erreur lors de la fermeture", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+                }
+            });
+        }
+    );
+}
+
+// Pour que les boutons HTML puissent appeler ces fonctions :
+(window as unknown as { closeCargaison: typeof closeCargaison, reopenCargaison: typeof reopenCargaison }).closeCargaison = closeCargaison;
+(window as unknown as { closeCargaison: typeof closeCargaison, reopenCargaison: typeof reopenCargaison }).reopenCargaison = reopenCargaison;
+
 // Fonctions d'action (affichent juste un message)
 (window as any).viewCargaison = (code: string) => alert('Affichage des détails de la cargaison: ' + code);
 (window as any).editCargaison = (code: string) => alert('Modification de la cargaison: ' + code);
-(window as any).closeCargaison = (code: string) => alert('Cargaison ' + code + ' fermée');
-(window as any).reopenCargaison = (code: string) => alert('Cargaison ' + code + ' rouverte');

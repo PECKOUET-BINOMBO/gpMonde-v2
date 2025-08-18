@@ -26,7 +26,7 @@
             "longitude_arrivee": "11.5751003",
             "poids_max": 1000,
             "poids_actuel": 500,
-            "etat": "fermé",
+            "etat": "ouvert",
             "date_depart": "2025-08-18T20:29:00.000Z",
             "date_arrivee": "2025-08-19T20:29:00.000Z",
             "description": ""
