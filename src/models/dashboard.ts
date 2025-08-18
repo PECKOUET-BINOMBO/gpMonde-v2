@@ -29,6 +29,16 @@ interface Colis {
     info_destinataire: any;
 }
 
+function getTypeIcon(type: string): string {
+    switch (type.toLowerCase()) {
+        case 'maritime': return `<i class="fas fa-ship text-primary mr-2"></i>`;
+        case 'aérien':
+        case 'aerien': return `<i class="fas fa-plane text-secondary mr-2"></i>`;
+        case 'routier': return `<i class="fas fa-truck text-accent mr-2"></i>`;
+        default: return '';
+    }
+}
+
 function getEtatColis(colis: Colis): string {
     if (!colis.etat) return '';
     const etat = colis.etat.toLowerCase();
@@ -64,7 +74,7 @@ async function loadDashboard() {
         recentCargaisonsContainer.innerHTML = cargaisons.slice(-3).reverse().map((c) => `
             <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div class="flex items-center">
-                    <i class="fas fa-ship text-primary text-lg mr-3"></i>
+                    ${getTypeIcon(c.type_transport)}
                     <div>
                         <p class="font-medium text-gray-900">${c.numero_cargaison}</p>
                         <p class="text-sm text-gray-600">${c.lieu_depart} → ${c.lieu_arrive}</p>

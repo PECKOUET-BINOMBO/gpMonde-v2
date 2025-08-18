@@ -49,21 +49,21 @@
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">État</label>
-                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" name="etat">
                                 <option value="">Tous</option>
                                 <option value="ouvert">Ouvert</option>
-                                <option value="ferme">Fermé</option>
+                                <option value="fermé">Fermé</option>
                             </select>
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lieu de départ</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Ville">
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Ville de départ">
                         </div>
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lieu d'arrivée</label>
-                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Ville">
+                            <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Ville d'arriver">
                         </div>
                     </div>
                     
@@ -103,37 +103,37 @@
                         </table>
                     </div>
                     
-                    <!-- Pagination 
+                    <!-- Pagination -->
                     <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                         <div class="flex-1 flex justify-between sm:hidden">
-                            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <a href="#" id="prevPageMobile" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 Précédent
                             </a>
-                            <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <a href="#" id="nextPageMobile" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                                 Suivant
                             </a>
                         </div>
                         <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                             <div>
-                                <p class="text-sm text-gray-700">
-                                    Affichage de <span class="font-medium">1</span> à <span class="font-medium">3</span> sur <span class="font-medium">3</span> résultats
+                                <p id="paginationInfo" class="text-sm text-gray-700">
+                                    Affichage de <span class="font-medium">1</span> à <span class="font-medium">5</span> sur <span class="font-medium">15</span> résultats
                                 </p>
                             </div>
                             <div>
                                 <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <a href="#" id="prevPage" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                         <i class="fas fa-chevron-left"></i>
                                     </a>
-                                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
+                                    <span id="paginationPages" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-primary text-sm font-medium text-white">
                                         1
-                                    </a>
-                                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    </span>
+                                    <a href="#" id="nextPage" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                                         <i class="fas fa-chevron-right"></i>
                                     </a>
                                 </nav>
                             </div>
                         </div>
-                    </div>-->
+                    </div>
                 </div>
             </main>
         </div>
@@ -206,42 +206,7 @@
         </div>
     </div>
 
-    <script>
-        function openNewCargoModal() {
-            document.getElementById('newCargoModal').classList.remove('hidden');
-        }
         
-        function closeNewCargoModal() {
-            document.getElementById('newCargoModal').classList.add('hidden');
-        }
-        
-        function viewCargaison(code) {
-            alert('Affichage des détails de la cargaison: ' + code);
-        }
-        
-        function editCargaison(code) {
-            alert('Modification de la cargaison: ' + code);
-        }
-        
-        function closeCargaison(code) {
-            if (confirm('Êtes-vous sûr de vouloir fermer cette cargaison?')) {
-                alert('Cargaison ' + code + ' fermée');
-            }
-        }
-        
-        function reopenCargaison(code) {
-            if (confirm('Êtes-vous sûr de vouloir rouvrir cette cargaison?')) {
-                alert('Cargaison ' + code + ' rouverte');
-            }
-        }
-        
-        // Fermer la modal en cliquant à l'extérieur
-        document.getElementById('newCargoModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeNewCargoModal();
-            }
-        });
-    </script>
     <script type="module" src="../../dist/models/cargaisons.js"></script>
 
 </body>

@@ -23,6 +23,9 @@ interface Colis {
 let allCargaisons: Cargaison[] = [];
 let allColis: Colis[] = [];
 
+let currentPage = 1;
+const itemsPerPage = 5;
+
 function getTypeIcon(type: string) {
     switch (type.toLowerCase()) {
         case 'maritime': return `<i class="fas fa-ship text-primary mr-2"></i>`;
@@ -56,9 +59,19 @@ function renderCargaisons(cargaisons: Cargaison[]) {
     if (!tbody) return;
     if (cargaisons.length === 0) {
         tbody.innerHTML = `<tr><td colspan="8" class="text-center text-gray-500 py-6">Aucune cargaison trouvée</td></tr>`;
+        updatePagination(0, 0, 0);
         return;
     }
-    tbody.innerHTML = cargaisons.map(c => {
+
+    // Pagination
+    const totalItems = cargaisons.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    if (currentPage > totalPages) currentPage = totalPages || 1;
+    const start = (currentPage - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    const pageItems = cargaisons.slice(start, end);
+
+    tbody.innerHTML = pageItems.map(c => {
         const nbColis = allColis.filter(colis => colis.cargaison_id === c.id).length;
         const percent = Math.round((c.poids_actuel / c.poids_max) * 100);
         return `
@@ -105,6 +118,85 @@ function renderCargaisons(cargaisons: Cargaison[]) {
             </tr>
         `;
     }).join('');
+
+    updatePagination(start + 1, Math.min(end, totalItems), totalItems, totalPages);
+}
+
+function updatePagination(start: number, end: number, total: number, totalPages?: number) {
+    const info = document.getElementById('paginationInfo');
+    if (info) {
+        info.innerHTML = `Affichage de <span class="font-medium">${start}</span> à <span class="font-medium">${end}</span> sur <span class="font-medium">${total}</span> résultats`;
+    }
+
+    // Pagination boutons
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const prevBtnMobile = document.getElementById('prevPageMobile');
+    const nextBtnMobile = document.getElementById('nextPageMobile');
+    const pagesSpan = document.getElementById('paginationPages');
+
+    if (pagesSpan && totalPages) {
+        pagesSpan.textContent = `${currentPage} / ${totalPages}`;
+    }
+
+    // Desktop
+    if (prevBtn && nextBtn && totalPages) {
+        prevBtn.onclick = (e) => {
+            e.preventDefault();
+            if (currentPage > 1) {
+                currentPage--;
+                renderCargaisons(getFilteredCargaisons());
+            }
+        };
+        nextBtn.onclick = (e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderCargaisons(getFilteredCargaisons());
+            }
+        };
+    }
+    // Mobile
+    if (prevBtnMobile && nextBtnMobile && totalPages) {
+        prevBtnMobile.onclick = (e) => {
+            e.preventDefault();
+            if (currentPage > 1) {
+                currentPage--;
+                renderCargaisons(getFilteredCargaisons());
+            }
+        };
+        nextBtnMobile.onclick = (e) => {
+            e.preventDefault();
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderCargaisons(getFilteredCargaisons());
+            }
+        };
+    }
+}
+
+// Utilitaire pour récupérer la liste filtrée
+function getFilteredCargaisons(): Cargaison[] {
+    let filtered = allCargaisons;
+    if (typeSelect && typeSelect.value) {
+        filtered = filtered.filter(c => normalize(c.type_transport) === normalize(typeSelect.value));
+    }
+    if (etatSelect && etatSelect.value) {
+        filtered = filtered.filter(c => c.etat.toLowerCase() === etatSelect.value.toLowerCase());
+    }
+    if (departInput && departInput.value) {
+        filtered = filtered.filter(c => c.lieu_depart.toLowerCase().includes(departInput.value.toLowerCase()));
+    }
+    if (arriveeInput && arriveeInput.value) {
+        filtered = filtered.filter(c => c.lieu_arrive.toLowerCase().includes(arriveeInput.value.toLowerCase()));
+    }
+    return filtered;
+}
+
+// Dans applyFilters, au lieu de renderCargaisons(filtered), fais :
+function applyFilters() {
+    currentPage = 1;
+    renderCargaisons(getFilteredCargaisons());
 }
 
 async function loadCargaisons() {
@@ -116,33 +208,25 @@ async function loadCargaisons() {
     renderCargaisons(allCargaisons);
 }
 
+let typeSelect: HTMLSelectElement;
+let etatSelect: HTMLSelectElement;
+let departInput: HTMLInputElement;
+let arriveeInput: HTMLInputElement;
+
+function normalize(str: string): string {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     loadCargaisons();
 
     // Filtres dynamiques
-    const typeSelect = document.querySelector('select[placeholder="Type"]') as HTMLSelectElement
+    typeSelect = document.querySelector('select[placeholder="Type"]') as HTMLSelectElement
         || document.querySelector('select:nth-of-type(1)') as HTMLSelectElement;
-    const etatSelect = document.querySelector('select[placeholder="État"]') as HTMLSelectElement
+    etatSelect = document.querySelector('select[name="etat"]') as HTMLSelectElement
         || document.querySelector('select:nth-of-type(2)') as HTMLSelectElement;
-    const departInput = document.querySelector('input[placeholder="Ville"]:nth-of-type(1)') as HTMLInputElement;
-    const arriveeInput = document.querySelector('input[placeholder="Ville"]:nth-of-type(2)') as HTMLInputElement;
-
-    function applyFilters() {
-        let filtered = allCargaisons;
-        if (typeSelect && typeSelect.value) {
-            filtered = filtered.filter(c => c.type_transport.toLowerCase() === typeSelect.value.toLowerCase());
-        }
-        if (etatSelect && etatSelect.value) {
-            filtered = filtered.filter(c => c.etat.toLowerCase() === etatSelect.value.toLowerCase());
-        }
-        if (departInput && departInput.value) {
-            filtered = filtered.filter(c => c.lieu_depart.toLowerCase().includes(departInput.value.toLowerCase()));
-        }
-        if (arriveeInput && arriveeInput.value) {
-            filtered = filtered.filter(c => c.lieu_arrive.toLowerCase().includes(arriveeInput.value.toLowerCase()));
-        }
-        renderCargaisons(filtered);
-    }
+    departInput = document.querySelector('input[placeholder="Ville de départ"]') as HTMLInputElement;
+    arriveeInput = document.querySelector('input[placeholder="Ville d\'arriver"]') as HTMLInputElement;
 
     // Appliquer les filtres
     typeSelect?.addEventListener('change', applyFilters);

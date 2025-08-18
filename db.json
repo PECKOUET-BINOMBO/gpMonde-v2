@@ -15,24 +15,6 @@
     "cargaisons": [
         {
             "id": 1,
-            "numero_cargaison": "CARG123456",
-            "type_transport": "maritime",
-            "lieu_depart": "Marseille",
-            "lieu_arrive": "Paris",
-            "distance": 775,
-            "latitude_depart": 43.2965,
-            "longitude_depart": 5.3698,
-            "latitude_arrivee": 48.8566,
-            "longitude_arrivee": 2.3522,
-            "poids_max": 1000,
-            "poids_actuel": 700,
-            "etat": "ouvert",
-            "date_depart": "2025-01-12 08:00",
-            "date_arrivee": "2025-01-17 18:00",
-            "description": "Cargaison de produits alimentaires"
-        },
-        {
-            "id": 2,
             "numero_cargaison": "CARG773770",
             "type_transport": "Routier",
             "lieu_depart": "Libreville, Estuaire, Gabon",
@@ -44,43 +26,53 @@
             "longitude_arrivee": "11.5751003",
             "poids_max": 1000,
             "poids_actuel": 500,
-            "etat": "ouvert",
+            "etat": "fermé",
             "date_depart": "2025-08-18T20:29:00.000Z",
             "date_arrivee": "2025-08-19T20:29:00.000Z",
+            "description": ""
+        },
+        {
+            "id": 2,
+            "numero_cargaison": "CARG309138",
+            "type_transport": "Maritime",
+            "lieu_depart": "parcelles assaini, Arrondissement des Parcelles Assainies, Dakar, Région de Dakar, Sénégal",
+            "lieu_arrive": "Commune de Mermoz-Sacré-Cœur, Arrondissement des Almadies, Dakar, Région de Dakar, Sénégal",
+            "distance": "7 km",
+            "latitude_depart": "14.7594072",
+            "longitude_depart": "-17.4384546",
+            "latitude_arrivee": "14.7057285",
+            "longitude_arrivee": "-17.4692086",
+            "poids_max": 1000,
+            "poids_actuel": 5.5,
+            "etat": "ouvert",
+            "date_depart": "2025-08-18T09:38:00.000Z",
+            "date_arrivee": "2025-09-18T09:38:00.000Z",
+            "description": ""
+        },
+        {
+            "id": 3,
+            "numero_cargaison": "CARG919661",
+            "type_transport": "Aérien",
+            "lieu_depart": "Dakar, Région de Dakar, Sénégal",
+            "lieu_arrive": "États-Unis d'Amérique",
+            "distance": "8378 km",
+            "latitude_depart": "14.693425",
+            "longitude_depart": "-17.447938",
+            "latitude_arrivee": "39.7837304",
+            "longitude_arrivee": "-100.445882",
+            "poids_max": 1000,
+            "poids_actuel": 500,
+            "etat": "ouvert",
+            "date_depart": "2025-08-18T10:33:00.000Z",
+            "date_arrivee": "2025-08-21T10:34:00.000Z",
             "description": ""
         }
     ],
     "colis": [
         {
             "id": 1,
-            "numero_colis": "CG123456",
-            "nbr_colis": 1,
-            "poids": 15.5,
-            "type_produit": "alimentaire",
-            "type_transport": "maritime",
-            "prix": 250000,
-            "description": "Colis alimentaire fragile",
+            "numero_colis": "CG29N3C5",
             "cargaison_id": 1,
-            "etat": "Perdu",
-            "info_expediteur": {
-                "nom": "Jean",
-                "prenom": "Dupont",
-                "adresse": "12 rue de la Mer, Marseille",
-                "tel": "+33123456789",
-                "email": "jean.dupont@example.com"
-            },
-            "info_destinataire": {
-                "nom": "Marie",
-                "prenom": "Martin",
-                "adresse": "45 avenue de Paris, Paris",
-                "tel": "+33198765432",
-                "email": "marie.martin@example.com"
-            }
-        },
-        {
-            "id": 2,
-            "numero_colis": "CG29N3C6",
-            "cargaison_id": 2,
             "nbr_colis": 2,
             "poids": 500,
             "type_produit": "alimentaire",
@@ -119,6 +111,104 @@
                 "email": "carlineerice@gmail.com"
             },
             "created_at": "2025-08-17 22:32:15"
+        },
+        {
+            "id": 2,
+            "numero_colis": "CG35NMAU",
+            "cargaison_id": 2,
+            "nbr_colis": 1,
+            "poids": 5.5,
+            "type_produit": "alimentaire",
+            "type_transport": "maritime",
+            "prix": 8250,
+            "description": "",
+            "etat": "En attente",
+            "lieu_actuel": "parcelles assaini, Arrondissement des Parcelles Assainies, Dakar, Région de Dakar, Sénégal",
+            "route": [
+                {
+                    "lat": "14.7594072",
+                    "lng": "-17.4384546",
+                    "name": "parcelles assaini, Arrondissement des Parcelles Assainies, Dakar, Région de Dakar, Sénégal (Départ)",
+                    "time": "18\/08\/2025 09:38"
+                },
+                {
+                    "lat": 14.732567849999999,
+                    "lng": -17.4538316,
+                    "name": "Point de Transit",
+                    "time": "20\/08\/2025 09:38"
+                },
+                {
+                    "lat": "14.7057285",
+                    "lng": "-17.4692086",
+                    "name": "Commune de Mermoz-Sacré-Cœur, Arrondissement des Almadies, Dakar, Région de Dakar, Sénégal (Destination)",
+                    "time": "18\/09\/2025 09:38"
+                }
+            ],
+            "currentIndex": 0,
+            "info_expediteur": {
+                "nom": "Papou",
+                "prenom": "colle",
+                "adresse": "ODC",
+                "tel": "+221772995850",
+                "email": "papoucolle@gmail.com"
+            },
+            "info_destinataire": {
+                "nom": "Rama",
+                "prenom": "bachir",
+                "adresse": "Ouest foire",
+                "tel": "+221772995849",
+                "email": "ramabachir@gmail.com"
+            },
+            "created_at": "2025-08-18 09:43:03"
+        },
+        {
+            "id": 3,
+            "numero_colis": "CG8N9MB1",
+            "cargaison_id": 3,
+            "nbr_colis": 1,
+            "poids": 500,
+            "type_produit": "fragile",
+            "type_transport": "aerien",
+            "prix": 2500000,
+            "description": "",
+            "etat": "En attente",
+            "lieu_actuel": "Dakar, Région de Dakar, Sénégal",
+            "route": [
+                {
+                    "lat": "14.693425",
+                    "lng": "-17.447938",
+                    "name": "Dakar, Région de Dakar, Sénégal (Départ)",
+                    "time": "18\/08\/2025 10:33"
+                },
+                {
+                    "lat": 27.2385777,
+                    "lng": -58.94691,
+                    "name": "Point de Transit",
+                    "time": "20\/08\/2025 10:33"
+                },
+                {
+                    "lat": "39.7837304",
+                    "lng": "-100.445882",
+                    "name": "États-Unis d'Amérique (Destination)",
+                    "time": "21\/08\/2025 10:34"
+                }
+            ],
+            "currentIndex": 0,
+            "info_expediteur": {
+                "nom": "PECKOUET BINOMBO",
+                "prenom": "Paul Émile",
+                "adresse": "Ouest foire",
+                "tel": "+221772995851",
+                "email": "apeckouet@gmail.com"
+            },
+            "info_destinataire": {
+                "nom": "PECKOUET-BINOMBO",
+                "prenom": "Paul Émile",
+                "adresse": "Ouest Foire\nAppartement",
+                "tel": "+221772995851",
+                "email": "peckouetbinombo@gmail.com"
+            },
+            "created_at": "2025-08-18 10:49:00"
         }
     ]
 }
