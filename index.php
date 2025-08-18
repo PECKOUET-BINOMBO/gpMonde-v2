@@ -302,6 +302,33 @@ if ($request === '/api/cargaison/close' && $_SERVER['REQUEST_METHOD'] === 'POST'
     exit;
 }
 
+// Modifier une cargaison
+if ($request === '/api/cargaison/update' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    $dbPath = __DIR__ . '/db.json';
+    $db = json_decode(file_get_contents($dbPath), true);
+
+    $found = false;
+    foreach ($db['cargaisons'] as &$cargaison) {
+        if ($cargaison['id'] == $data['id']) {
+            $cargaison['type_transport'] = $data['type_transport'];
+            $cargaison['lieu_depart'] = $data['lieu_depart'];
+            $cargaison['lieu_arrive'] = $data['lieu_arrive'];
+            $cargaison['poids_max'] = $data['poids_max'];
+            $cargaison['description'] = $data['description'];
+            $found = true;
+            break;
+        }
+    }
+    if ($found && file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        echo json_encode(['success' => true]);
+    } else {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => "Erreur lors de la modification"]);
+    }
+    exit;
+}
+
 
 // Ensuite, routes classiques
 if (array_key_exists($request, $routes)) {

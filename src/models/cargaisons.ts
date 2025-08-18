@@ -26,6 +26,30 @@ let allColis: Colis[] = [];
 let currentPage = 1;
 const itemsPerPage = 5;
 
+// Variables pour la carte d'édition
+let editCargoMap: any;
+let editDepartureMarker: any = null;
+let editArrivalMarker: any = null;
+let editRouteLine: any = null;
+let editCurrentSelection = 'departure'; // 'departure' or 'arrival'
+let editSearchTimeout: any = null;
+
+// Variables pour la carte de visualisation
+let viewCargoMap: any;
+let viewDepartureMarker: any = null;
+let viewArrivalMarker: any = null;
+let viewRouteLine: any = null;
+
+
+function closeViewCargoModal() {
+    const modal = document.getElementById('viewCargoModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function closeEditCargoModal() {
+    const modal = document.getElementById('editCargoModal');
+    if (modal) modal.classList.add('hidden');
+}
 
 function showModal(message: string, iconHtml: string = '<i class="fas fa-info-circle"></i>') {
     const modal = document.getElementById('actionModal') as HTMLDivElement;
@@ -365,3 +389,503 @@ function closeCargaison(numero: string): void {
 // Fonctions d'action (affichent juste un message)
 (window as any).viewCargaison = (code: string) => alert('Affichage des détails de la cargaison: ' + code);
 (window as any).editCargaison = (code: string) => alert('Modification de la cargaison: ' + code);
+
+function viewCargaison(numero: string): void {
+    const cargaison = allCargaisons.find(c => c.numero_cargaison === numero);
+    if (!cargaison) {
+        showModal("Cargaison introuvable", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+        return;
+    }
+    const content = `
+        <div class="space-y-4">
+            <div>
+                <p><span class="font-semibold">Code :</span> ${cargaison.numero_cargaison}</p>
+                <p><span class="font-semibold">Type :</span> ${cargaison.type_transport}</p>
+                <p><span class="font-semibold">État :</span> ${cargaison.etat}</p>
+                <p><span class="font-semibold">Poids max :</span> ${cargaison.poids_max} kg</p>
+                <p><span class="font-semibold">Poids actuel :</span> ${cargaison.poids_actuel} kg</p>
+                <p><span class="font-semibold">Description :</span> ${cargaison.description || '-'}</p>
+            </div>
+            <div>
+                <p><span class="font-semibold">Départ :</span> ${cargaison.lieu_depart}</p>
+                <p><span class="font-semibold">Arrivée :</span> ${cargaison.lieu_arrive}</p>
+                <p><span class="font-semibold">Distance :</span> ${cargaison.distance || '-'}</p>
+                <p><span class="font-semibold">Date départ :</span> ${cargaison.date_depart ? new Date(cargaison.date_depart).toLocaleString() : '-'}</p>
+                <p><span class="font-semibold">Date arrivée :</span> ${cargaison.date_arrivee ? new Date(cargaison.date_arrivee).toLocaleString() : '-'}</p>
+            </div>
+        </div>
+    `;
+    const modal = document.getElementById('viewCargoModal');
+    const contentDiv = document.getElementById('viewCargoContent');
+    if (modal && contentDiv) {
+        contentDiv.innerHTML = content;
+        modal.classList.remove('hidden');
+        
+        // Initialiser la carte de visualisation
+        setTimeout(() => {
+            initViewCargoMap();
+            
+            // Afficher le trajet si les coordonnées sont disponibles
+            const depLat = parseFloat((cargaison as any).latitude_depart);
+            const depLng = parseFloat((cargaison as any).longitude_depart);
+            const arrLat = parseFloat((cargaison as any).latitude_arrivee);
+            const arrLng = parseFloat((cargaison as any).longitude_arrivee);
+
+            if (!isNaN(depLat) && !isNaN(depLng)) {
+                addViewDepartureMarker(depLat, depLng);
+            }
+            if (!isNaN(arrLat) && !isNaN(arrLng)) {
+                addViewArrivalMarker(arrLat, arrLng);
+            }
+            
+            // Afficher la ligne de trajet si les deux points sont disponibles
+            if (!isNaN(depLat) && !isNaN(depLng) && !isNaN(arrLat) && !isNaN(arrLng)) {
+                addViewRouteLine();
+            }
+        }, 100);
+    }
+}
+(window as any).viewCargaison = viewCargaison;
+
+function editCargaison(numero: string): void {
+    const cargaison = allCargaisons.find(c => c.numero_cargaison === numero);
+    if (!cargaison) {
+        showModal("Cargaison introuvable", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+        return;
+    }
+
+    // Pré-remplir les champs du formulaire
+    const form = document.getElementById('editCargoForm') as HTMLFormElement;
+    if (!form) return;
+
+    // Remplir les champs
+    (document.getElementById('editTransportType') as HTMLSelectElement).value = cargaison.type_transport;
+    (document.getElementById('editDeparturePlace') as HTMLInputElement).value = cargaison.lieu_depart;
+    (document.getElementById('editArrivalPlace') as HTMLInputElement).value = cargaison.lieu_arrive;
+    (document.getElementById('editDistance') as HTMLInputElement).value = cargaison.distance?.toString() || '';
+    (document.getElementById('editMaxWeight') as HTMLInputElement).value = cargaison.poids_max.toString();
+    (document.getElementById('editDescription') as HTMLTextAreaElement).value = cargaison.description || '';
+
+    // Formater les dates pour les champs datetime-local
+    if (cargaison.date_depart) {
+        const dateDepart = new Date(cargaison.date_depart);
+        (document.getElementById('editDateDepart') as HTMLInputElement).value = dateDepart.toISOString().slice(0, 16);
+    }
+    if (cargaison.date_arrivee) {
+        const dateArrivee = new Date(cargaison.date_arrivee);
+        (document.getElementById('editDateArrivee') as HTMLInputElement).value = dateArrivee.toISOString().slice(0, 16);
+    }
+
+    // Remplir les coordonnées cachées
+    (document.getElementById('editDepartureLat') as HTMLInputElement).value = (cargaison as any).latitude_depart || '';
+    (document.getElementById('editDepartureLng') as HTMLInputElement).value = (cargaison as any).longitude_depart || '';
+    (document.getElementById('editArrivalLat') as HTMLInputElement).value = (cargaison as any).latitude_arrivee || '';
+    (document.getElementById('editArrivalLng') as HTMLInputElement).value = (cargaison as any).longitude_arrivee || '';
+
+    // Afficher la modal
+    const modal = document.getElementById('editCargoModal');
+    if (modal) modal.classList.remove('hidden');
+
+    // Initialiser la carte
+    setTimeout(() => {
+        initEditCargoMap();
+        
+        // Pré-remplir la carte avec les coordonnées existantes
+        const depLat = parseFloat((cargaison as any).latitude_depart);
+        const depLng = parseFloat((cargaison as any).longitude_depart);
+        const arrLat = parseFloat((cargaison as any).latitude_arrivee);
+        const arrLng = parseFloat((cargaison as any).longitude_arrivee);
+
+        if (!isNaN(depLat) && !isNaN(depLng)) {
+            updateEditDeparture(depLat, depLng);
+        }
+        if (!isNaN(arrLat) && !isNaN(arrLng)) {
+            updateEditArrival(arrLat, arrLng);
+        }
+    }, 100);
+
+    // Gestion de la soumission du formulaire
+    form.onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const updatedCargo = {
+            id: cargaison.id,
+            type_transport: formData.get('type_transport'),
+            lieu_depart: formData.get('lieu_depart'),
+            lieu_arrive: formData.get('lieu_arrive'),
+            distance: formData.get('distance'),
+            latitude_depart: formData.get('latitude_depart'),
+            longitude_depart: formData.get('longitude_depart'),
+            latitude_arrivee: formData.get('latitude_arrivee'),
+            longitude_arrivee: formData.get('longitude_arrivee'),
+            poids_max: Number(formData.get('poids_max')),
+            date_depart: formData.get('date_depart'),
+            date_arrivee: formData.get('date_arrivee'),
+            description: formData.get('description')
+        };
+
+        // Appel API pour modifier la cargaison
+        const response = await fetch('/api/cargaison/update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedCargo)
+        });
+        const result = await response.json();
+        if (result.success) {
+            closeEditCargoModal();
+            showModal("Cargaison modifiée avec succès !", '<i class="fas fa-check-circle text-green-600"></i>');
+            await loadCargaisons();
+            renderCargaisons(getFilteredCargaisons());
+        } else {
+            showModal(result.message || "Erreur lors de la modification", '<i class="fas fa-exclamation-triangle text-red-500"></i>');
+        }
+    };
+}
+(window as any).editCargaison = editCargaison;
+
+
+// Fonctions pour la carte d'édition
+function initEditCargoMap() {
+    if (editCargoMap) {
+        editCargoMap.remove();
+    }
+    
+    // Créer la carte centrée sur l'Europe
+    editCargoMap = (window as any).L.map('editCargoMap').setView([46.603354, 1.888334], 5);
+
+    // Ajouter la couche OpenStreetMap
+    (window as any).L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(editCargoMap);
+
+     // Réinitialise les marqueurs et la ligne
+    editDepartureMarker = null;
+    editArrivalMarker = null;
+    editRouteLine = null;
+
+    // Gestion des clics et autocomplete
+    editCurrentSelection = 'departure';
+    setupEditAutocomplete();
+
+    // Gérer le clic sur la carte
+    editCargoMap.on('click', function(e: any) {
+        const { lat, lng } = e.latlng;
+
+        // Mettre à jour les coordonnées sélectionnées
+        (document.getElementById('editSelectedLat') as HTMLInputElement).value = lat.toFixed(6);
+        (document.getElementById('editSelectedLng') as HTMLInputElement).value = lng.toFixed(6);
+
+        // Mettre à jour le marqueur approprié
+        if (editCurrentSelection === 'departure') {
+            updateEditDeparture(lat, lng);
+            // Géocodage inverse pour obtenir le nom de la ville
+            editReverseGeocode(lat, lng, 'departure');
+        } else {
+            updateEditArrival(lat, lng);
+            // Géocodage inverse pour obtenir le nom de la ville
+            editReverseGeocode(lat, lng, 'arrival');
+        }
+    });
+
+    // Gestion des champs de saisie pour l'autocomplétion
+    setupEditAutocomplete();
+}
+
+function updateEditDeparture(lat: number, lng: number) {
+    // Mettre à jour les champs cachés
+    (document.getElementById('editDepartureLat') as HTMLInputElement).value = lat.toString();
+    (document.getElementById('editDepartureLng') as HTMLInputElement).value = lng.toString();
+
+    // Mettre à jour ou créer le marqueur
+    if (editDepartureMarker) {
+        editDepartureMarker.setLatLng([lat, lng]);
+    } else {
+        editDepartureMarker = (window as any).L.marker([lat, lng], {
+            icon: (window as any).L.divIcon({
+                className: 'custom-marker',
+                html: `<div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white">
+                         <i class="fas fa-play text-xs"></i>
+                       </div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            })
+        }).addTo(editCargoMap);
+
+        // Ajouter un popup
+        editDepartureMarker.bindPopup("Point de départ");
+    }
+
+    // Mettre à jour la ligne de route si nécessaire
+    updateEditRouteLine();
+}
+
+function updateEditArrival(lat: number, lng: number) {
+    // Mettre à jour les champs cachés
+    (document.getElementById('editArrivalLat') as HTMLInputElement).value = lat.toString();
+    (document.getElementById('editArrivalLng') as HTMLInputElement).value = lng.toString();
+
+    // Mettre à jour ou créer le marqueur
+    if (editArrivalMarker) {
+        editArrivalMarker.setLatLng([lat, lng]);
+    } else {
+        editArrivalMarker = (window as any).L.marker([lat, lng], {
+            icon: (window as any).L.divIcon({
+                className: 'custom-marker',
+                html: `<div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white">
+                         <i class="fas fa-flag text-xs"></i>
+                       </div>`,
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            })
+        }).addTo(editCargoMap);
+
+        // Ajouter un popup
+        editArrivalMarker.bindPopup("Point d'arrivée");
+    }
+
+    // Mettre à jour la ligne de route si nécessaire
+    updateEditRouteLine();
+}
+
+function updateEditRouteLine() {
+    // Supprimer l'ancienne ligne si elle existe
+    if (editRouteLine) {
+        editCargoMap.removeLayer(editRouteLine);
+    }
+
+    // Dessiner une nouvelle ligne si les deux points sont définis
+    if (editDepartureMarker && editArrivalMarker) {
+        const departureLatLng = editDepartureMarker.getLatLng();
+        const arrivalLatLng = editArrivalMarker.getLatLng();
+
+        editRouteLine = (window as any).L.polyline([departureLatLng, arrivalLatLng], {
+            color: '#3b82f6',
+            weight: 4,
+            dashArray: '10, 5',
+            opacity: 0.8
+        }).addTo(editCargoMap);
+
+        // Ajuster la vue pour voir toute la route
+        editCargoMap.fitBounds([departureLatLng, arrivalLatLng], {
+            padding: [50, 50]
+        });
+
+        // Calculer et afficher la distance
+        calculateEditDistance();
+    }
+}
+
+function calculateEditDistance() {
+    if (editDepartureMarker && editArrivalMarker) {
+        const departureLatLng = editDepartureMarker.getLatLng();
+        const arrivalLatLng = editArrivalMarker.getLatLng();
+
+        // Calculer la distance en km (formule de Haversine)
+        const R = 6371; // Rayon de la Terre en km
+        const dLat = (arrivalLatLng.lat - departureLatLng.lat) * Math.PI / 180;
+        const dLng = (arrivalLatLng.lng - departureLatLng.lng) * Math.PI / 180;
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(departureLatLng.lat * Math.PI / 180) * Math.cos(arrivalLatLng.lat * Math.PI / 180) *
+            Math.sin(dLng / 2) * Math.sin(dLng / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+
+        (document.getElementById('editDistance') as HTMLInputElement).value = Math.round(distance) + ' km';
+    }
+}
+
+function setupEditAutocomplete() {
+    const departureInput = document.getElementById('editDeparturePlace') as HTMLInputElement;
+    const arrivalInput = document.getElementById('editArrivalPlace') as HTMLInputElement;
+
+    if (departureInput) {
+        departureInput.addEventListener('focus', () => {
+            editCurrentSelection = 'departure';
+        });
+
+        departureInput.addEventListener('input', (e) => {
+            const query = (e.target as HTMLInputElement).value;
+            if (query.length > 2) {
+                clearTimeout(editSearchTimeout);
+                editSearchTimeout = setTimeout(() => {
+                    editSearchPlace(query, 'departure');
+                }, 300);
+            } else {
+                editHideSuggestions('departure');
+            }
+        });
+    }
+
+    if (arrivalInput) {
+        arrivalInput.addEventListener('focus', () => {
+            editCurrentSelection = 'arrival';
+        });
+
+        arrivalInput.addEventListener('input', (e) => {
+            const query = (e.target as HTMLInputElement).value;
+            if (query.length > 2) {
+                clearTimeout(editSearchTimeout);
+                editSearchTimeout = setTimeout(() => {
+                    editSearchPlace(query, 'arrival');
+                }, 300);
+            } else {
+                editHideSuggestions('arrival');
+            }
+        });
+    }
+}
+
+async function editSearchPlace(query: string, type: 'departure' | 'arrival') {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`);
+        const results = await response.json();
+        
+        editShowSuggestions(results, type);
+    } catch (error) {
+        console.error('Erreur lors de la recherche:', error);
+    }
+}
+
+function editShowSuggestions(results: any[], type: 'departure' | 'arrival') {
+    const suggestionsId = type === 'departure' ? 'editDepartureSuggestions' : 'editArrivalSuggestions';
+    const suggestionsDiv = document.getElementById(suggestionsId);
+    
+    if (!suggestionsDiv) return;
+
+    if (results.length === 0) {
+        suggestionsDiv.classList.add('hidden');
+        return;
+    }
+
+    suggestionsDiv.innerHTML = results.map(result => `
+        <div class="p-2 hover:bg-gray-100 cursor-pointer border-b border-gray-200 last:border-b-0" 
+             onclick="editSelectPlace('${result.display_name}', ${result.lat}, ${result.lon}, '${type}')">
+            <div class="font-medium text-sm">${result.display_name}</div>
+        </div>
+    `).join('');
+
+    suggestionsDiv.classList.remove('hidden');
+}
+
+function editSelectPlace(displayName: string, lat: number, lng: number, type: 'departure' | 'arrival') {
+    const inputId = type === 'departure' ? 'editDeparturePlace' : 'editArrivalPlace';
+    const statusId = type === 'departure' ? 'editDepartureStatus' : 'editArrivalStatus';
+    
+    (document.getElementById(inputId) as HTMLInputElement).value = displayName;
+    (document.getElementById(statusId) as HTMLElement).innerHTML = '<span class="text-green-600"><i class="fas fa-check"></i> Lieu sélectionné</span>';
+    
+    if (type === 'departure') {
+        updateEditDeparture(lat, lng);
+    } else {
+        updateEditArrival(lat, lng);
+    }
+    
+    editHideSuggestions(type);
+}
+
+function editHideSuggestions(type: 'departure' | 'arrival') {
+    const suggestionsId = type === 'departure' ? 'editDepartureSuggestions' : 'editArrivalSuggestions';
+    const suggestionsDiv = document.getElementById(suggestionsId);
+    if (suggestionsDiv) {
+        suggestionsDiv.classList.add('hidden');
+    }
+}
+
+async function editReverseGeocode(lat: number, lng: number, type: 'departure' | 'arrival') {
+    try {
+        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`);
+        const result = await response.json();
+        
+        if (result && result.display_name) {
+            const inputId = type === 'departure' ? 'editDeparturePlace' : 'editArrivalPlace';
+            const statusId = type === 'departure' ? 'editDepartureStatus' : 'editArrivalStatus';
+            
+            (document.getElementById(inputId) as HTMLInputElement).value = result.display_name;
+            (document.getElementById(statusId) as HTMLElement).innerHTML = '<span class="text-green-600"><i class="fas fa-map-marker-alt"></i> Position sélectionnée sur la carte</span>';
+        }
+    } catch (error) {
+        console.error('Erreur lors du géocodage inverse:', error);
+    }
+}
+
+// Rendre les fonctions globales pour les onclick
+(window as any).editSelectPlace = editSelectPlace;
+
+
+// Fonctions pour la carte de visualisation
+function initViewCargoMap() {
+    if (viewCargoMap) {
+        viewCargoMap.remove();
+    }
+    
+    // Créer la carte centrée sur l'Europe
+    viewCargoMap = (window as any).L.map('viewCargoMap').setView([46.603354, 1.888334], 5);
+
+    // Ajouter la couche OpenStreetMap
+    (window as any).L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(viewCargoMap);
+}
+
+function addViewDepartureMarker(lat: number, lng: number) {
+    viewDepartureMarker = (window as any).L.marker([lat, lng], {
+        icon: (window as any).L.divIcon({
+            className: 'custom-marker',
+            html: `<div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white">
+                     <i class="fas fa-play text-xs"></i>
+                   </div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        })
+    }).addTo(viewCargoMap);
+
+    // Ajouter un popup
+    viewDepartureMarker.bindPopup("Point de départ");
+}
+
+function addViewArrivalMarker(lat: number, lng: number) {
+    viewArrivalMarker = (window as any).L.marker([lat, lng], {
+        icon: (window as any).L.divIcon({
+            className: 'custom-marker',
+            html: `<div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white shadow-lg border-2 border-white">
+                     <i class="fas fa-flag text-xs"></i>
+                   </div>`,
+            iconSize: [32, 32],
+            iconAnchor: [16, 16]
+        })
+    }).addTo(viewCargoMap);
+
+    // Ajouter un popup
+    viewArrivalMarker.bindPopup("Point d'arrivée");
+}
+
+function addViewRouteLine() {
+    // Supprimer l'ancienne ligne si elle existe
+    if (viewRouteLine) {
+        viewCargoMap.removeLayer(viewRouteLine);
+    }
+
+    // Dessiner une nouvelle ligne si les deux points sont définis
+    if (viewDepartureMarker && viewArrivalMarker) {
+        const departureLatLng = viewDepartureMarker.getLatLng();
+        const arrivalLatLng = viewArrivalMarker.getLatLng();
+
+        viewRouteLine = (window as any).L.polyline([departureLatLng, arrivalLatLng], {
+            color: '#3b82f6',
+            weight: 4,
+            dashArray: '10, 5',
+            opacity: 0.8
+        }).addTo(viewCargoMap);
+
+        // Ajuster la vue pour voir toute la route
+        viewCargoMap.fitBounds([departureLatLng, arrivalLatLng], {
+            padding: [50, 50]
+        });
+    }
+}
+
+// Fermer les modals (ajout des fonctions globales)
+(window as any).closeViewCargoModal = closeViewCargoModal;
+(window as any).closeEditCargoModal = closeEditCargoModal;
+

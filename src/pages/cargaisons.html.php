@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr" class="h-full">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,16 +21,23 @@
         }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
 </head>
+
 <body class="h-full bg-gray-50">
     <div class="flex h-full">
         <!-- Sidebar -->
-       <?php include __DIR__ . '/../partials/sideBar.html.php'; ?>
+        <?php include __DIR__ . '/../partials/sideBar.html.php'; ?>
 
         <!-- Main content -->
         <div class="flex flex-col flex-1 overflow-hidden">
             <!-- Top bar -->
-           <?php include __DIR__ . '/../partials/topBar.html.php'; ?>
+            <?php include __DIR__ . '/../partials/topBar.html.php'; ?>
 
             <!-- Content -->
             <main class="flex-1 overflow-y-auto p-6">
@@ -46,7 +54,7 @@
                                 <option value="routier">Routier</option>
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">État</label>
                             <select class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" name="etat">
@@ -55,18 +63,18 @@
                                 <option value="fermé">Fermé</option>
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lieu de départ</label>
                             <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Ville de départ">
                         </div>
-                        
+
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Lieu d'arrivée</label>
                             <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Ville d'arriver">
                         </div>
                     </div>
-                    
+
                     <div class="flex justify-end mt-4 space-x-3">
                         <button class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">
                             Réinitialiser
@@ -82,7 +90,7 @@
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h3 class="text-lg font-medium text-gray-900">Liste des Cargaisons</h3>
                     </div>
-                    
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -102,7 +110,7 @@
                             </tbody>
                         </table>
                     </div>
-                    
+
                     <!-- Pagination -->
                     <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                         <div class="flex-1 flex justify-between sm:hidden">
@@ -206,19 +214,152 @@
         </div>
     </div>-->
 
-        <!-- Modal de confirmation -->
-<div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
-  <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
-    <div id="confirmModalIcon" class="mb-4 text-4xl text-primary"></div>
-    <div id="confirmModalMessage" class="mb-4 text-gray-800 text-lg"></div>
-    <div class="flex justify-center gap-4">
-      <button id="confirmModalCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Annuler</button>
-      <button id="confirmModalOk" class="px-4 py-2 bg-primary text-white rounded hover:bg-blue-800">Confirmer</button>
+    <!-- Modal de confirmation -->
+    <div id="confirmModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full text-center">
+            <div id="confirmModalIcon" class="mb-4 text-4xl text-primary"></div>
+            <div id="confirmModalMessage" class="mb-4 text-gray-800 text-lg"></div>
+            <div class="flex justify-center gap-4">
+                <button id="confirmModalCancel" class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400">Annuler</button>
+                <button id="confirmModalOk" class="px-4 py-2 bg-primary text-white rounded hover:bg-blue-800">Confirmer</button>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
+
+    <!-- Modal Voir Cargaison -->
+    <div id="viewCargoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40 hidden">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full text-left">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Détails de la cargaison</h3>
+                <button onclick="closeViewCargoModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div id="viewCargoContent"></div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-900 mb-3">Trajet</h4>
+                    <div class="h-64 rounded-lg border border-gray-300">
+                        <div id="viewCargoMap" class="h-full w-full rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Modifier Cargaison -->
+    <div id="editCargoModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Modifier la Cargaison</h3>
+                    <button onclick="closeEditCargoModal()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <form class="space-y-4" id="editCargoForm">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Type de transport</label>
+                        <select name="type_transport" id="editTransportType" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                            <option>Maritime</option>
+                            <option>Aérien</option>
+                            <option>Routier</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lieu de départ</label>
+                            <div class="relative">
+                                <input name="lieu_depart" type="text" id="editDeparturePlace"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                                    placeholder="Tapez une ville (ex: Dakar, Sénégal)"
+                                    autocomplete="off">
+                                <div id="editDepartureSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
+                            </div>
+                            <div id="editDepartureStatus" class="text-sm mt-1"></div>
+                            <input type="hidden" id="editDepartureLat" name="latitude_depart">
+                            <input type="hidden" id="editDepartureLng" name="longitude_depart">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Lieu d'arrivée</label>
+                            <div class="relative">
+                                <input name="lieu_arrive" type="text" id="editArrivalPlace"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary"
+                                    placeholder="Tapez une ville (ex: Libreville, Gabon)"
+                                    autocomplete="off">
+                                <div id="editArrivalSuggestions" class="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg hidden max-h-40 overflow-y-auto"></div>
+                            </div>
+                            <div id="editArrivalStatus" class="text-sm mt-1"></div>
+                            <input type="hidden" id="editArrivalLat" name="latitude_arrivee">
+                            <input type="hidden" id="editArrivalLng" name="longitude_arrivee">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Distance (km)</label>
+                            <input name="distance" type="text" id="editDistance" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Latitude sélectionnée</label>
+                            <input name="latitude" type="text" id="editSelectedLat" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Longitude sélectionnée</label>
+                            <input name="longitude" type="text" id="editSelectedLng" class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-100" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Carte pour sélection -->
+                    <div class="h-64 rounded-lg border border-gray-300">
+                        <div id="editCargoMap" class="h-full w-full rounded-lg"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Poids maximum (kg)</label>
+                        <input type="number" id="editMaxWeight" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="1000" name="poids_max">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date de départ</label>
+                            <input type="datetime-local" id="editDateDepart" name="date_depart" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date d'arrivée</label>
+                            <input type="datetime-local" id="editDateArrivee" name="date_arrivee" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="editDescription" name="description" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" placeholder="Description de la cargaison..."></textarea>
+                    </div>
+
+                    <div class="flex space-x-3 pt-4">
+                        <button type="submit" class="flex-1 bg-primary hover:bg-blue-800 text-white py-2 px-4 rounded-md font-medium transition-colors">
+                            Modifier
+                        </button>
+                        <button type="button" onclick="closeEditCargoModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md font-medium transition-colors">
+                            Annuler
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
     <script type="module" src="../../dist/models/cargaisons.js"></script>
+    
+    <style>
+        .custom-marker {
+            background: transparent !important;
+            border: none !important;
+        }
+    </style>
 
 </body>
-</html>
 
+</html>
