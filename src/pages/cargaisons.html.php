@@ -97,146 +97,13 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">CG-MAR-001</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-ship text-primary mr-2"></i>
-                                            <span class="text-sm text-gray-900">Maritime</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">Marseille → Alger</div>
-                                        <div class="text-sm text-gray-500">1,250 km</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">850/1000 kg</div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-                                            <div class="bg-primary h-2 rounded-full" style="width: 85%"></div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">15</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            Ouvert
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            En cours
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <button onclick="viewCargaison('CG-MAR-001')" class="text-primary hover:text-blue-800">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button onclick="editCargaison('CG-MAR-001')" class="text-secondary hover:text-orange-600">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button onclick="closeCargaison('CG-MAR-001')" class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-lock"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">CG-AER-002</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-plane text-secondary mr-2"></i>
-                                            <span class="text-sm text-gray-900">Aérien</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">Paris → Dakar</div>
-                                        <div class="text-sm text-gray-500">4,125 km</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">125/200 kg</div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-                                            <div class="bg-secondary h-2 rounded-full" style="width: 62%"></div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                            Fermé
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            Arrivé
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <button onclick="viewCargaison('CG-AER-002')" class="text-primary hover:text-blue-800">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button onclick="reopenCargaison('CG-AER-002')" class="text-accent hover:text-green-600">
-                                                <i class="fas fa-unlock"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">CG-ROU-003</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <i class="fas fa-truck text-accent mr-2"></i>
-                                            <span class="text-sm text-gray-900">Routier</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">Lyon → Genève</div>
-                                        <div class="text-sm text-gray-500">150 km</div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">320/500 kg</div>
-                                        <div class="w-full bg-gray-200 rounded-full h-2 mt-1">
-                                            <div class="bg-accent h-2 rounded-full" style="width: 64%"></div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">22</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            Ouvert
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            En attente
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <button onclick="viewCargaison('CG-ROU-003')" class="text-primary hover:text-blue-800">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button onclick="editCargaison('CG-ROU-003')" class="text-secondary hover:text-orange-600">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button onclick="closeCargaison('CG-ROU-003')" class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-lock"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="cargaisons-tbody" class="bg-white divide-y divide-gray-200">
+                                <!-- Les lignes seront injectées dynamiquement -->
                             </tbody>
                         </table>
                     </div>
                     
-                    <!-- Pagination -->
+                    <!-- Pagination 
                     <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                         <div class="flex-1 flex justify-between sm:hidden">
                             <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
@@ -266,7 +133,7 @@
                                 </nav>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
             </main>
         </div>
@@ -375,7 +242,7 @@
             }
         });
     </script>
-    <script type="module" src="../../dist/pages/cargaisons.js"></script>
+    <script type="module" src="../../dist/models/cargaisons.js"></script>
 
 </body>
 </html>
