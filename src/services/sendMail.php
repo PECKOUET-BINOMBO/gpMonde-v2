@@ -17,10 +17,10 @@ function sendMail($to, $subject, $body, $from = 'no-reply@cargotrack.local') {
     try {
         // Config SMTP (adapter selon ton hébergeur)
         $mail->isSMTP();
-        $mail->Host = 'smtp.example.com'; // à adapter
+        $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'user@example.com'; // à adapter
-        $mail->Password = 'password'; // à adapter
+        $mail->Username = 'apeckouet@gmail.com';
+        $mail->Password = 'rptl mqwj rhmh eanv';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 

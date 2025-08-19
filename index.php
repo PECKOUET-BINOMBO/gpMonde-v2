@@ -100,7 +100,7 @@ if ($request === '/api/cargaisons' && $_SERVER['REQUEST_METHOD'] === 'GET') {
     echo json_encode(array_values($cargaisons));
     exit;
 }
-
+///////////////////////////////////////////////////////////////////////
 if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $dbPath = __DIR__ . '/db.json';
@@ -256,7 +256,7 @@ if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
-
+////////////////////////////////////////////////////////////
 if ($request === '/api/colis/update-status' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
     $dbPath = __DIR__ . '/db.json';
