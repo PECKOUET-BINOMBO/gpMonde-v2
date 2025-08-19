@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 
 require_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/src/config/titreTopBar.php';
+require_once __DIR__ . '/src/services/sendMail.php';
 
 // Routes
 $routes = [
@@ -217,6 +218,31 @@ if ($request === '/api/colis' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     $cargaison['poids_actuel'] = $poids_actuel + $data['poids'];
 
     if (file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        // Préparer les emails
+        $exp = $newColis['info_expediteur'];
+        $dest = $newColis['info_destinataire'];
+        $code = $newColis['numero_colis'];
+
+        $subjectExp = "Votre colis a été enregistré - Code $code";
+        $bodyExp = "<p>Bonjour {$exp['prenom']} {$exp['nom']},<br>
+        Votre colis <b>$code</b> a bien été enregistré.<br>
+        Destinataire : {$dest['prenom']} {$dest['nom']}<br>
+        Poids : {$newColis['poids']} kg<br>
+        Type : {$newColis['type_produit']}<br>
+        Suivi : $code<br>
+        Merci d'utiliser CargoTrack !</p>";
+
+        $subjectDest = "Un colis vous a été envoyé - Code $code";
+        $bodyDest = "<p>Bonjour {$dest['prenom']} {$dest['nom']},<br>
+        Un colis <b>$code</b> vous a été envoyé par {$exp['prenom']} {$exp['nom']}.<br>
+        Poids : {$newColis['poids']} kg<br>
+        Type : {$newColis['type_produit']}<br>
+        Suivi : $code<br>
+        Merci d'utiliser CargoTrack !</p>";
+
+        if (!empty($exp['email'])) sendMail($exp['email'], $subjectExp, $bodyExp);
+        if (!empty($dest['email'])) sendMail($dest['email'], $subjectDest, $bodyDest);
+
         header('Content-Type: application/json');
         echo json_encode([
             "success" => true, 
@@ -258,6 +284,24 @@ if ($request === '/api/colis/update-status' && $_SERVER['REQUEST_METHOD'] === 'P
     }
 
     if (file_put_contents($dbPath, json_encode($db, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE))) {
+        $exp = $colis['info_expediteur'];
+        $dest = $colis['info_destinataire'];
+        $code = $colis['numero_colis'];
+        $etat = $colis['etat'];
+
+        $subjectExp = "Mise à jour de votre colis $code";
+        $bodyExp = "<p>Bonjour {$exp['prenom']} {$exp['nom']},<br>
+        L'état de votre colis <b>$code</b> est maintenant : <b>$etat</b>.<br>
+        Merci d'utiliser CargoTrack !</p>";
+
+        $subjectDest = "Mise à jour du colis $code";
+        $bodyDest = "<p>Bonjour {$dest['prenom']} {$dest['nom']},<br>
+        L'état du colis <b>$code</b> qui vous est destiné est maintenant : <b>$etat</b>.<br>
+        Merci d'utiliser CargoTrack !</p>";
+
+        if (!empty($exp['email'])) sendMail($exp['email'], $subjectExp, $bodyExp);
+        if (!empty($dest['email'])) sendMail($dest['email'], $subjectDest, $bodyDest);
+
         echo json_encode(["success" => true]);
     } else {
         http_response_code(500);

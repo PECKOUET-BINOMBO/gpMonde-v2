@@ -11,5 +11,7 @@
             "email": "apeckouet@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
 }

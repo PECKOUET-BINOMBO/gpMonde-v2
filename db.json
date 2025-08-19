@@ -79,7 +79,7 @@
             "type_transport": "maritime",
             "prix": 750000,
             "description": "",
-            "etat": "Perdu",
+            "etat": "Récupéré",
             "lieu_actuel": "Libreville, Estuaire, Gabon",
             "route": [
                 {
