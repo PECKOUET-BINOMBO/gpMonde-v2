@@ -248,8 +248,6 @@ async function updatePackageStatus() {
                             currentPackage.etat = label;
                             renderResults(allColis);
                             openPackageDetails(currentPackage.numero_colis);
-                        } else {
-                            renderResults(allColis);
                         }
                         showSuccessToast(`L'état du colis a bien été mis à jour en "${label}".`);
                     } else {

@@ -29,7 +29,7 @@
             "etat": "ouvert",
             "date_depart": "2025-08-18T20:29:00.000Z",
             "date_arrivee": "2025-08-19T20:29:00.000Z",
-            "description": ""
+            "description": "Nouvelle cargaison disponible"
         },
         {
             "id": 2,
@@ -43,7 +43,7 @@
             "latitude_arrivee": "14.7057285",
             "longitude_arrivee": "-17.4692086",
             "poids_max": 1000,
-            "poids_actuel": 5.5,
+            "poids_actuel": 905.5,
             "etat": "ouvert",
             "date_depart": "2025-08-18T09:38:00.000Z",
             "date_arrivee": "2025-09-18T09:38:00.000Z",
@@ -79,7 +79,7 @@
             "type_transport": "maritime",
             "prix": 750000,
             "description": "",
-            "etat": "Récupéré",
+            "etat": "Perdu",
             "lieu_actuel": "Libreville, Estuaire, Gabon",
             "route": [
                 {
@@ -209,6 +209,104 @@
                 "email": "peckouetbinombo@gmail.com"
             },
             "created_at": "2025-08-18 10:49:00"
+        },
+        {
+            "id": 4,
+            "numero_colis": "CGCC63MM",
+            "cargaison_id": 2,
+            "nbr_colis": 1,
+            "poids": 700,
+            "type_produit": "fragile",
+            "type_transport": "maritime",
+            "prix": 1050000,
+            "description": "Colis fragile à transporter avec précotion",
+            "etat": "En attente",
+            "lieu_actuel": "Saint-Louis, Département de Saint-Louis, Saint-Louis, Sénégal",
+            "route": [
+                {
+                    "lat": "14.7594072",
+                    "lng": "-17.4384546",
+                    "name": "Saint-Louis, Département de Saint-Louis, Saint-Louis, Sénégal (Départ)",
+                    "time": "18\/08\/2025 09:38"
+                },
+                {
+                    "lat": 14.732567849999999,
+                    "lng": -17.4538316,
+                    "name": "Point de Transit",
+                    "time": "20\/08\/2025 09:38"
+                },
+                {
+                    "lat": "14.7057285",
+                    "lng": "-17.4692086",
+                    "name": "Commune de Mermoz-Sacré-Cœur, Arrondissement des Almadies, Dakar, Région de Dakar, Sénégal (Destination)",
+                    "time": "18\/09\/2025 09:38"
+                }
+            ],
+            "currentIndex": 0,
+            "info_expediteur": {
+                "nom": "PBPA",
+                "prenom": "Axel",
+                "adresse": "Ouest Foire",
+                "tel": "+221772995654",
+                "email": "peckouetbinombo@gmail.com"
+            },
+            "info_destinataire": {
+                "nom": "PECKOUET BINOMBO",
+                "prenom": "Paul Émile",
+                "adresse": "Ouest foire",
+                "tel": "+221772995851",
+                "email": "apeckouet@gmail.com"
+            },
+            "created_at": "2025-08-19 00:19:41"
+        },
+        {
+            "id": 5,
+            "numero_colis": "CGHQVRMU",
+            "cargaison_id": 2,
+            "nbr_colis": 1,
+            "poids": 200,
+            "type_produit": "fragile",
+            "type_transport": "maritime",
+            "prix": 300000,
+            "description": "",
+            "etat": "En attente",
+            "lieu_actuel": "Saint-Louis, Département de Saint-Louis, Saint-Louis, Sénégal",
+            "route": [
+                {
+                    "lat": "14.7594072",
+                    "lng": "-17.4384546",
+                    "name": "Saint-Louis, Département de Saint-Louis, Saint-Louis, Sénégal (Départ)",
+                    "time": "18\/08\/2025 09:38"
+                },
+                {
+                    "lat": 14.732567849999999,
+                    "lng": -17.4538316,
+                    "name": "Point de Transit",
+                    "time": "20\/08\/2025 09:38"
+                },
+                {
+                    "lat": "14.7057285",
+                    "lng": "-17.4692086",
+                    "name": "Commune de Mermoz-Sacré-Cœur, Arrondissement des Almadies, Dakar, Région de Dakar, Sénégal (Destination)",
+                    "time": "18\/09\/2025 09:38"
+                }
+            ],
+            "currentIndex": 0,
+            "info_expediteur": {
+                "nom": "PECKOUET BINOMBO",
+                "prenom": "Paul Émile",
+                "adresse": "Ouest foire",
+                "tel": "+221772995851",
+                "email": "apeckouet@gmail.com"
+            },
+            "info_destinataire": {
+                "nom": "PECKOUET-BINOMBO",
+                "prenom": "Paul Émile",
+                "adresse": "Ouest Foire\nAppartement",
+                "tel": "+221772995851",
+                "email": "peckouetbinombo@gmail.com"
+            },
+            "created_at": "2025-08-19 00:31:08"
         }
     ]
 }

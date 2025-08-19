@@ -20,6 +20,61 @@
             }
         }
     </script>
+    <style>
+        @media print {
+            body * { 
+                visibility: hidden !important; 
+            }
+            .receipt-content, .receipt-content * { 
+                visibility: visible !important; 
+            }
+            .receipt-content { 
+                position: absolute !important; 
+                left: 0 !important; 
+                top: 0 !important; 
+                width: 100% !important;
+                background: white !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 20px !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        .receipt-content {
+            font-family: 'Courier New', monospace;
+            line-height: 1.4;
+        }
+        
+        .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .receipt-section {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .receipt-total {
+            font-weight: bold;
+            font-size: 1.1em;
+            border-top: 2px solid #000;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+    </style>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -233,7 +288,7 @@
 
     <!-- Modal de confirmation -->
     <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="relative top-20 mx-auto p-5 border w-full max-w-md shadow-lg rounded-md bg-white">
             <div class="mt-3 text-center">
                 <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                     <i class="fas fa-check text-green-600 text-xl"></i>
@@ -252,6 +307,29 @@
                         Fermer
                     </button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de reçu pour impression -->
+    <div id="receiptModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-10 mx-auto p-5 border w-full max-w-2xl shadow-lg rounded-md bg-white">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Reçu d'Enregistrement</h3>
+                <button onclick="closeReceiptModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="receiptContent" class="receipt-content">
+                <!-- Le contenu du reçu sera généré ici -->
+            </div>
+            <div class="flex space-x-3 mt-6">
+                <button onclick="printReceiptContent()" class="flex-1 bg-secondary hover:bg-orange-600 text-white py-2 px-4 rounded-md font-medium transition-colors">
+                    <i class="fas fa-print mr-2"></i>Imprimer
+                </button>
+                <button onclick="closeReceiptModal()" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-md font-medium transition-colors">
+                    Fermer
+                </button>
             </div>
         </div>
     </div>

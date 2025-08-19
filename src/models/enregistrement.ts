@@ -4,6 +4,7 @@ import { DatabaseService } from '../services/DatabaseService.js';
 export class EnregistrementColis {
     private formId: string;
     private dbService: DatabaseService;
+    public currentColisData: any = null; // Stocker les données du colis pour le reçu
 
     constructor(formId: string = 'packageForm') {
         this.formId = formId;
@@ -204,6 +205,8 @@ export class EnregistrementColis {
 
             const result = await response.json();
             if (result.success) {
+                // Stocker les données du colis pour le reçu
+                this.currentColisData = colisData;
                 this.showConfirmation(numeroColis);
                 console.log('Colis créé avec succès:', result.colis);
             } else {
@@ -228,11 +231,112 @@ export class EnregistrementColis {
             modal.classList.remove('hidden');
         }
     }
+
+    public generateReceiptContent(colisData: any, trackingCode: string): string {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('fr-FR');
+        const timeStr = now.toLocaleTimeString('fr-FR');
+        
+        return `
+            <div class="receipt-header">
+                <h2 style="margin: 0; font-size: 1.5em;">CARGOTRACK</h2>
+                <p style="margin: 5px 0;">Reçu d'Enregistrement de Colis</p>
+                <p style="margin: 5px 0; font-size: 0.9em;">Date: ${dateStr} - Heure: ${timeStr}</p>
+            </div>
+
+            <div class="receipt-section">
+                <h3 style="margin: 0 0 10px 0; font-size: 1.1em;">INFORMATIONS COLIS</h3>
+                <div class="receipt-row">
+                    <span>Code de suivi:</span>
+                    <span style="font-weight: bold;">${trackingCode}</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Nombre de colis:</span>
+                    <span>${colisData.nbr_colis}</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Poids total:</span>
+                    <span>${colisData.poids} kg</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Type de produit:</span>
+                    <span>${colisData.type_produit}</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Type de transport:</span>
+                    <span>${colisData.type_transport}</span>
+                </div>
+                ${colisData.description ? `
+                <div style="margin-top: 10px;">
+                    <span style="font-weight: bold;">Description:</span><br>
+                    <span style="font-style: italic;">${colisData.description}</span>
+                </div>
+                ` : ''}
+            </div>
+
+            <div class="receipt-section">
+                <h3 style="margin: 0 0 10px 0; font-size: 1.1em;">EXPÉDITEUR</h3>
+                <div class="receipt-row">
+                    <span>Nom:</span>
+                    <span>${colisData.info_expediteur.nom} ${colisData.info_expediteur.prenom}</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Téléphone:</span>
+                    <span>${colisData.info_expediteur.tel}</span>
+                </div>
+                ${colisData.info_expediteur.email ? `
+                <div class="receipt-row">
+                    <span>Email:</span>
+                    <span>${colisData.info_expediteur.email}</span>
+                </div>
+                ` : ''}
+                <div style="margin-top: 5px;">
+                    <span style="font-weight: bold;">Adresse:</span><br>
+                    <span>${colisData.info_expediteur.adresse}</span>
+                </div>
+            </div>
+
+            <div class="receipt-section">
+                <h3 style="margin: 0 0 10px 0; font-size: 1.1em;">DESTINATAIRE</h3>
+                <div class="receipt-row">
+                    <span>Nom:</span>
+                    <span>${colisData.info_destinataire.nom} ${colisData.info_destinataire.prenom}</span>
+                </div>
+                <div class="receipt-row">
+                    <span>Téléphone:</span>
+                    <span>${colisData.info_destinataire.tel}</span>
+                </div>
+                ${colisData.info_destinataire.email ? `
+                <div class="receipt-row">
+                    <span>Email:</span>
+                    <span>${colisData.info_destinataire.email}</span>
+                </div>
+                ` : ''}
+                <div style="margin-top: 5px;">
+                    <span style="font-weight: bold;">Adresse:</span><br>
+                    <span>${colisData.info_destinataire.adresse}</span>
+                </div>
+            </div>
+
+            <div class="receipt-total">
+                <div class="receipt-row">
+                    <span>TOTAL À PAYER:</span>
+                    <span>${colisData.prix.toFixed(0)} XAF</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px; font-size: 0.9em;">
+                <p style="margin: 5px 0;">Merci de votre confiance !</p>
+                <p style="margin: 5px 0;">Conservez ce reçu pour le suivi de votre colis</p>
+                <p style="margin: 5px 0; font-style: italic;">Code de suivi: ${trackingCode}</p>
+            </div>
+        `;
+    }
 }
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', () => {
-    new EnregistrementColis();
+    window.enregistrementInstance = new EnregistrementColis();
 });
 
 // Fonctions globales pour le HTML
@@ -242,6 +346,9 @@ declare global {
         resetForm: () => void;
         closeConfirmationModal: () => void;
         printReceipt: () => void;
+        closeReceiptModal: () => void;
+        printReceiptContent: () => void;
+        enregistrementInstance: EnregistrementColis;
     }
 }
 
@@ -268,8 +375,34 @@ window.closeConfirmationModal = function() {
 };
 
 window.printReceipt = function() {
-    const trackingCode = document.getElementById('tracking-code-display')?.textContent;
-    if (trackingCode) {
-        window.print();
+    const trackingCode = (document.getElementById('tracking-code-display') as HTMLElement)?.textContent;
+    if (!trackingCode || !window.enregistrementInstance.currentColisData) {
+        alert('Aucune donnée de reçu disponible');
+        return;
     }
+
+    // Générer le contenu du reçu
+    const receiptContent = window.enregistrementInstance.generateReceiptContent(
+        window.enregistrementInstance.currentColisData, 
+        trackingCode
+    );
+    
+    // Afficher dans la modal de reçu
+    const receiptContentDiv = document.getElementById('receiptContent');
+    if (receiptContentDiv) {
+        receiptContentDiv.innerHTML = receiptContent;
+    }
+    
+    // Afficher la modal de reçu
+    document.getElementById('receiptModal')?.classList.remove('hidden');
+    // Fermer la modal de confirmation
+    document.getElementById('confirmationModal')?.classList.add('hidden');
+};
+
+window.closeReceiptModal = function() {
+    document.getElementById('receiptModal')?.classList.add('hidden');
+};
+
+window.printReceiptContent = function() {
+    window.print();
 };
