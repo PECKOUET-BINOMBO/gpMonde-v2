@@ -4,15 +4,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Configuration pour Render
-$isRender = getenv('RENDER') !== false;
+// Configuration pour Docker/Render
+$isDocker = getenv('DOCKER') !== false || file_exists('/.dockerenv');
 
-if ($isRender) {
-    // Sur Render, utiliser le port fourni par l'environnement
-    $port = getenv('PORT') ?: 10000;
-    
-    // Configurer le chemin absolu pour les includes
-    define('BASE_PATH', __DIR__);
+if ($isDocker) {
+    // Configuration pour Docker
+    define('BASE_URL', 'https://your-app-name.onrender.com');
+    define('ASSETS_PATH', '/src/assets');
     
     // S'assurer que db.json est accessible en écriture
     $dbPath = __DIR__ . '/db.json';
@@ -21,7 +19,8 @@ if ($isRender) {
     }
 } else {
     // Configuration locale
-    $port = 10000;
+    define('BASE_URL', 'http://localhost:10000');
+    define('ASSETS_PATH', '/src/assets');
 }
 
 // ini_set('display_errors', 1);
