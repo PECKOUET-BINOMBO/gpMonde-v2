@@ -1,7 +1,32 @@
 <?php
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Configuration pour Render
+$isRender = getenv('RENDER') !== false;
+
+if ($isRender) {
+    // Sur Render, utiliser le port fourni par l'environnement
+    $port = getenv('PORT') ?: 10000;
+    
+    // Configurer le chemin absolu pour les includes
+    define('BASE_PATH', __DIR__);
+    
+    // S'assurer que db.json est accessible en écriture
+    $dbPath = __DIR__ . '/db.json';
+    if (!file_exists($dbPath)) {
+        file_put_contents($dbPath, json_encode(["personnes" => [], "cargaisons" => [], "colis" => []]));
+    }
+} else {
+    // Configuration locale
+    $port = 10000;
+}
+
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 require_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/src/config/titreTopBar.php';
