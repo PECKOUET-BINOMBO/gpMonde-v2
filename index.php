@@ -1,31 +1,7 @@
 <?php
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
-// Configuration pour Docker/Render
-$isDocker = getenv('DOCKER') !== false || file_exists('/.dockerenv');
-
-if ($isDocker) {
-    // Configuration pour Docker
-    define('BASE_URL', 'https://your-app-name.onrender.com');
-    define('ASSETS_PATH', '/src/assets');
-    
-    // S'assurer que db.json est accessible en écriture
-    $dbPath = __DIR__ . '/db.json';
-    if (!file_exists($dbPath)) {
-        file_put_contents($dbPath, json_encode(["personnes" => [], "cargaisons" => [], "colis" => []]));
-    }
-} else {
-    // Configuration locale
-    define('BASE_URL', 'http://localhost:10000');
-    define('ASSETS_PATH', '/src/assets');
-}
-
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
 
 require_once __DIR__.'/vendor/autoload.php';
 require_once __DIR__.'/src/config/titreTopBar.php';
