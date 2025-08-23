@@ -240,7 +240,7 @@ async function updatePackageStatus() {
                     const response = await fetch('/api/colis/update-status', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ numero_colis: currentPackage.numero_colis, etat: label })
+                        body: JSON.stringify({ numero_colis: currentPackage?.numero_colis, etat: label })
                     });
                     const result = await response.json();
                     if (result.success) {
